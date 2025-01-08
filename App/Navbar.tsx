@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Text from './Text'; // Import custom Text component
 import { MMKV } from 'react-native-mmkv';
 
+
 // Initialize MMKV
 const storage = new MMKV();
 

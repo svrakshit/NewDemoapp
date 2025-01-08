@@ -19,10 +19,23 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.smaurya.QRCodeScannerApp",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0
+    },
+    "extra": {
+      "eas": {
+        "projectId": "52f15932-d5c8-49db-83a2-290e39bb8b45"
+      },
+      "googleClientId": "528873498711-nchsodfmf1j053rs1vgn51l2taal52ji.apps.googleusercontent.com"
     }
   }
 }

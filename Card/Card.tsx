@@ -43,31 +43,7 @@ const Cards: React.FunctionComponent<CardsComponentsProps> = () => {
           ))}
         </Card>
 
-        <Card containerStyle={styles.cardContainer}>
-          <Card.Title style={styles.cardTitle}>abc</Card.Title>
-          <Card.Divider />
-          <Card.Image
-            style={styles.cardImage}
-            source={{
-              uri: 'https://awildgeographer.files.wordpress.com/2015/02/john_muir_glacier.jpg',
-            }}
-          />
-          <Text style={styles.cardText}>
-            The idea with React Native Elements is more about component
-            structure than actual design.
-          </Text>
-          <Button
-            icon={
-              <Icon
-                name="code"
-                color="#ffffff"
-                iconStyle={{ marginRight: 10 }}
-              />
-            }
-            buttonStyle={styles.button}
-            title="VIEW NOW"
-          />
-        </Card>
+    
       </View>
     </ScrollView>
   );

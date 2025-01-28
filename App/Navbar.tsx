@@ -8,14 +8,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Text from './Text'; // Import custom Text component
 import { MMKV } from 'react-native-mmkv';
 
-
 // Initialize MMKV
 const storage = new MMKV();
 
 // Define the type for the drawer navigator
 type DrawerParamList = {
   Home: undefined; // Add other screens here if needed
-  Login: undefined; // Login screen
+  LoginApp: undefined; // Login screen
 };
 
 const Navbar: React.FC = () => {
@@ -51,9 +50,15 @@ const Navbar: React.FC = () => {
   const processLogout = () => {
     try {
       // Remove token or user data from MMKV storage
-      storage.delete('userToken'); // Replace 'userToken' with your actual key
-      // Navigate to Login screen
-     
+      storage.delete('userToken'); // Correct method for deleting an item
+      console.log('User logged out successfully');
+      
+      // Use reset to navigate to the Login screen and clear the navigation stack
+      navigation.reset({
+    
+        routes: [{ name: 'LoginApp' }],
+      });
+
     } catch (error) {
       console.error('Error during logout:', error);
     }

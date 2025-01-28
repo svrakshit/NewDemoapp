@@ -10,6 +10,7 @@ const Login = () => {
 
         <SafeAreaView style={styles.container}>
             <Navbar />
+            
        
      
     

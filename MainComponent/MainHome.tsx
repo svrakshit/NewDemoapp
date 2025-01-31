@@ -6,9 +6,7 @@ import MyCard from '../Card/Card';
 
 
 const MainHome = () => {
-  const handleCardPress = (section: string) => {
-    Alert.alert(`${section} card pressed`);
-  };
+
 
   return (
     <SafeAreaView style={styles.container}>

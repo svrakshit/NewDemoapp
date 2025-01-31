@@ -1,29 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, Alert } from 'react-native';
 import { Header as HeaderRNE } from 'react-native-elements';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Text from './Text'; // Import custom Text component
 import { MMKV } from 'react-native-mmkv';
+import { NavigationContext } from '../App'; // Ensure NavigationContext is correctly imported
+import { DrawerActions } from '@react-navigation/native';
 
 // Initialize MMKV
 const storage = new MMKV();
 
-// Define the type for the drawer navigator
-type DrawerParamList = {
-  Home: undefined; // Add other screens here if needed
-  LoginApp: undefined; // Login screen
-};
-
 const Navbar: React.FC = () => {
-  const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
+  const navigation = useContext(NavigationContext); // Using the navigation context here
   const route = useRoute();
   const currentRouteName = route.name;
 
   const handleMenuPress = () => {
-    navigation.openDrawer(); // Opens the sidebar
+    if (navigation) {
+      navigation.dispatch(DrawerActions.openDrawer());  // Opening the drawer
+    }
   };
 
   const handleLogoutPress = () => {
@@ -54,10 +50,11 @@ const Navbar: React.FC = () => {
       console.log('User logged out successfully');
       
       // Use reset to navigate to the Login screen and clear the navigation stack
-      navigation.reset({
-    
-        routes: [{ name: 'LoginApp' }],
-      });
+      if (navigation) {
+        navigation.reset({
+          routes: [{ name: 'LoginApp' }],
+        });
+      }
 
     } catch (error) {
       console.error('Error during logout:', error);
@@ -70,7 +67,7 @@ const Navbar: React.FC = () => {
         leftComponent={{
           icon: 'menu',
           color: '#fff',
-          onPress: handleMenuPress,
+          onPress: handleMenuPress, // Open the drawer
         }}
         centerComponent={
           <Text style={styles.headerTitle}>{currentRouteName}</Text>

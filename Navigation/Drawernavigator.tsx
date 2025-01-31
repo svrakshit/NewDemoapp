@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import Home from '../Component/Home';
-import Profile from '../Component/Profile';
-import List from '../Component/List';
+import Dhasboard from '../Screens/Dhasboard';
+import Profile from '../Screens/Profile';
+import List from '../Screens/List';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 
 
 
@@ -15,7 +17,7 @@ const Drawer = createDrawerNavigator();
 
 
 
-export default function App() {
+export default function Drawernavigator() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -24,7 +26,9 @@ export default function App() {
  
     
       <Drawer.Navigator
-      initialRouteName="Home"
+      initialRouteName="Dhasboard"
+      
+      id={undefined}  // Add this line
  
       screenOptions={{
         headerStyle: {
@@ -45,14 +49,15 @@ export default function App() {
       
     >
       <Drawer.Screen
-        name="Home"
+        name="Dhasboard"
         options={{
           headerShown: false,
-          drawerIcon: ({ color }) => (
-            <Text style={{ fontSize: 24, color }}>🏠</Text>
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="dashboard" size={size} color={color} />
           ),
+       
         }}
-        component={Home}
+        component={Dhasboard}
       />
       <Drawer.Screen
         name="Profile"
@@ -74,6 +79,18 @@ export default function App() {
         }}
         component={List}
       />
+
+
+      
+      
+
+
+       
+
+
+
+
+
     </Drawer.Navigator>
 
 

@@ -1,25 +1,32 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import Navbar from '../App/Navbar';
-import MainHome from '../MainComponent/MainHome';
+import Cards from './Card';
 
 
 
-const Home = () => {
+
+const Dhasboard = () => {
 
 
     return (
 
         <SafeAreaView style={styles.container}>
             <Navbar />
+            
+    <Cards/>
                
-            <MainHome />
+      
 
 
 
         </SafeAreaView>
+    
 
 
+
+
+    
     );
 };
 
@@ -31,4 +38,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Home;
+export default Dhasboard;

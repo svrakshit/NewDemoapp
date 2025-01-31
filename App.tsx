@@ -1,30 +1,32 @@
-import React, { useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginApp from './MainComponent/LoginApp';
-import Sidepanel from './Sidepanel/Sidepanel';
-import Navbar from './App/Navbar';
+import StackNavigator from './Navigation/StackNavigator';  // Assuming this is your stack navigator component
+import { NavigationContainerRef } from '@react-navigation/native';
 
+type RootParamList = {};
 
-const Stack = createStackNavigator();
+export const NavigationContext = React.createContext<NavigationContainerRef<RootParamList> | null>(null); // Named export
 
-export default function App() {
+const App = () => {
+  const navigationRef = useRef<NavigationContainerRef<RootParamList> | null>(null);
+  const [isReady, setIsReady] = useState(false);
 
+  useEffect(() => {
+    if (navigationRef.current) {
+      setIsReady(true);
+    }
+  }, [navigationRef.current]);
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName={'LoginApp'}
-        screenOptions={{ headerShown: false }}
-      >
-      
-
-        <Stack.Screen name="Sidepanel" component={Sidepanel} />
-
-
-      
-      </Stack.Navigator>
-      
+    <NavigationContainer ref={navigationRef}>
+      {isReady && (
+        <NavigationContext.Provider value={navigationRef.current}>
+          <StackNavigator />
+        </NavigationContext.Provider>
+      )}
     </NavigationContainer>
   );
-}
+};
+
+export default App;

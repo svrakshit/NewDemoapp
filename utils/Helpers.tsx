@@ -28,15 +28,7 @@ export const useQueryParams = () => {
     return params;
 };
 
-export const processLogout = async () => {
-    try {
-        await clearUserSession();
-    
-        console.log("User logged out successfully");
-    } catch (error) {
-        console.error("Logout failed:", error);
-    }
-};
+
 
 // Helper function to clear user session
 const clearUserSession = async () => {

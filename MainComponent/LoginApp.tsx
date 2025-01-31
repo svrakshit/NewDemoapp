@@ -9,12 +9,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
 interface LoginAppProps {
-  navigation: StackNavigationProp<any>; // Typing for navigation
+  navigation: StackNavigationProp<any>; 
 }
 
 const  LoginApp: React.FC<LoginAppProps> = ({ navigation }) => {
-  const [mobileno, setMobileno] = useState('');
-  const [password, setPassword] = useState('');
+  const [mobileno, setMobileno] = useState('9990665359');
+  const [password, setPassword] = useState('Password@123');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -37,7 +37,7 @@ const  LoginApp: React.FC<LoginAppProps> = ({ navigation }) => {
         const responseData = response.data;
         mmkvStorage.setItem('userinfo', JSON.stringify(responseData));
         mmkvStorage.setItem('token', responseData?.token);
-        navigation.navigate('Sidepanel');
+        navigation.navigate('Drawernavigator');
         
 
    
@@ -97,7 +97,7 @@ const  LoginApp: React.FC<LoginAppProps> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text h3 style={styles.title}>
-        Welcome Backhfd!
+        Welcome Back!
       </Text>
       <Input
         placeholder="Mobile Number"
@@ -164,6 +164,8 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginBottom: 20,
     width: '100%',
+    // borderWidth: 1, // Border for definition
+    // borderColor: '#ccc',
   },
   loginButton: {
     backgroundColor: 'blue',

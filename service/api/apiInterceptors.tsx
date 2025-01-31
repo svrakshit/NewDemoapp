@@ -12,12 +12,12 @@ api.interceptors.request.use(
   async (config) => {
     const token = await mmkvStorage.getItem('token'); 
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`; // Attach token if available
+      config.headers['Authorization'] = `Bearer ${token}`; 
     }
     return config;
   },
   (error) => {
-    return Promise.reject(error);  // If there's an error, reject the request
+    return Promise.reject(error);  
   }
 );
 

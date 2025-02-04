@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import Dhasboard from '../Screens/Dhasboard';
-import Profile from '../Screens/Profile';
-import List from '../Screens/List';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import GenerateRecieveHealthReport from '../Screensfour/GenerateRecieveHealthReport';
+import RecieveDhasbaord from '../Screensfour/RecieveDhasbaord';
+import RecieveHealthReport from '../Screensfour/RecieveHealthReport';
+
+
+
 
 
 
@@ -17,7 +19,7 @@ const Drawer = createDrawerNavigator();
 
 
 
-export default function Drawernavigator() {
+export default function  RecieveDrawernavigator() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -26,7 +28,7 @@ export default function Drawernavigator() {
  
     
       <Drawer.Navigator
-      initialRouteName="Dhasboard"
+      initialRouteName="RecieveDhasbaord"
       
       id={undefined}  // Add this line
  
@@ -48,38 +50,33 @@ export default function Drawernavigator() {
       }}
       
     >
+     
       <Drawer.Screen
-        name="Dhasboard"
+        name="RecieveDhasbaord"
         options={{
           headerShown: false,
-          drawerIcon: ({ color, size }) => (
-            <MaterialIcons name="dashboard" size={size} color={color} />
-          ),
-       
+        
         }}
-        component={Dhasboard}
+        component={RecieveDhasbaord}
       />
       <Drawer.Screen
-        name="Profile"
+        name="GenerateRecieveHealthReport"
         options={{
           headerShown: false,
-          drawerIcon: ({ color }) => (
-            <Text style={{ fontSize: 24, color }}>👤</Text>
-          ),
+        
         }}
-        component={Profile}
-      />
-      <Drawer.Screen
-        name="List"
-        options={{
-          headerShown: false,
-          drawerIcon: ({ color }) => (
-            <Text style={{ fontSize: 24, color }}>📋</Text>
-          ),
-        }}
-        component={List}
+        component={GenerateRecieveHealthReport}
       />
 
+
+<Drawer.Screen
+        name="RecieveHealthReport"
+        options={{
+          headerShown: false,
+
+        }}
+        component={RecieveHealthReport}
+      />
 
       
       

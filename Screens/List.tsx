@@ -11,7 +11,7 @@ const List = () => {
     return (
 
         <SafeAreaView style={styles.container}>
-            <Navbar />
+            <Navbar navigation={undefined} />
      
 
           <ListApp />

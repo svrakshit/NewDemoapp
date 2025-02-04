@@ -4,5 +4,9 @@ export type RootStackParamList = {
     Login: undefined;  // No params for Login screen
     Profile: undefined;  // No params for Profile screen
     List: undefined;  // No params for List screen
+    WarehouseDrawernavigator: undefined;
+    AssyingDrawernavigator: undefined;
+    DispatchDrawernavigator: undefined;
+    RecieveDrawernavigator: undefined;
   };
   

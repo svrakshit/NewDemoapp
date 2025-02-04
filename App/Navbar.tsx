@@ -1,24 +1,63 @@
 import React, { useContext } from 'react';
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Alert, View, TouchableOpacity } from 'react-native';
 import { Header as HeaderRNE } from 'react-native-elements';
 import { useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Text from './Text'; // Import custom Text component
 import { MMKV } from 'react-native-mmkv';
-import { NavigationContext } from '../App'; // Ensure NavigationContext is correctly imported
+import { NavigationContext } from '@react-navigation/native'; // Ensure this is correctly imported
 import { DrawerActions } from '@react-navigation/native';
-
+import { Picker } from '@react-native-picker/picker';
+import { NavigationProp } from '@react-navigation/native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'; 
 // Initialize MMKV
 const storage = new MMKV();
 
-const Navbar: React.FC = () => {
-  const navigation = useContext(NavigationContext); // Using the navigation context here
+// Define RootStackParamList with all your screens
+type RootStackParamList = {
+  AssyingDrawernavigator: undefined; // Define your screens here
+  LoginApp : undefined;
+  WarehouseDrawernavigator : undefined;
+  DispatchDrawernavigator : undefined;
+  RecieveDrawernavigator :  undefined;
+
+  
+  // other screens
+};
+
+type Props = {
+  navigation: NavigationProp<RootStackParamList>;
+};
+
+const Navbar: React.FC<Props> = () => {
+  // Typecast NavigationContext to NavigationProp
+  const navigation = useContext(NavigationContext) as NavigationProp<RootStackParamList>;
+
   const route = useRoute();
   const currentRouteName = route.name;
 
+  const [selectedScreen, setSelectedScreen] = React.useState('');
+
+  const handleSelectScreen = (value: string) => {
+    setSelectedScreen(value);
+    if (value === 'AssyingDrawernavigator') {
+      navigation.navigate('AssyingDrawernavigator');
+    }
+    if (value === 'WarehouseDrawernavigator') {
+      navigation.navigate('WarehouseDrawernavigator');
+    }
+
+    if (value === 'DispatchDrawernavigator') {
+      navigation.navigate('DispatchDrawernavigator');
+    }
+  if (value === 'RecieveDrawernavigator') {
+      navigation.navigate('RecieveDrawernavigator');
+    }
+  };
+
   const handleMenuPress = () => {
     if (navigation) {
-      navigation.dispatch(DrawerActions.openDrawer());  // Opening the drawer
+      navigation.dispatch(DrawerActions.openDrawer()); // Opening the drawer
     }
   };
 
@@ -72,11 +111,25 @@ const Navbar: React.FC = () => {
         centerComponent={
           <Text style={styles.headerTitle}>{currentRouteName}</Text>
         }
-        rightComponent={{
-          icon: 'home',
-          color: '#fff',
-          onPress: handleLogoutPress, // Logout on press
-        }}
+        rightComponent={
+          <View style={styles.rightComponentContainer}>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={selectedScreen}
+                onValueChange={handleSelectScreen}
+                style={styles.picker}
+              >
+                <Picker.Item label="Assying" value="AssyingDrawernavigator" />
+                <Picker.Item label="Warehouse Checklist" value="WarehouseDrawernavigator" />
+                <Picker.Item label="Dispatch Health Report" value="DispatchDrawernavigator" />
+                <Picker.Item label="Recieve Health Report" value="RecieveDrawernavigator" />
+              </Picker>
+            </View>
+            <TouchableOpacity onPress={handleLogoutPress} style={styles.logoutButton}>
+            <MaterialIcons name="logout" size={20} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        }
         backgroundColor="#007BFF"
       />
     </SafeAreaView>
@@ -88,6 +141,32 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  rightComponentContainer: {
+    flexDirection: 'row',
+   
+
+  },
+  pickerContainer: {
+    width: 50,
+  
+   
+  },
+  picker: {
+    height: 40,
+    color: '#fff',
+  },
+  logoutButton: {
+    marginLeft: 10,
+    padding: 5,
+  
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoutButtonText: {
+    color: '#fff',
+    fontSize: 14,
   },
 });
 

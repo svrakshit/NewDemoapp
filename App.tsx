@@ -1,8 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+
 import StackNavigator from './Navigation/StackNavigator';  // Assuming this is your stack navigator component
 import { NavigationContainerRef } from '@react-navigation/native';
+
 
 type RootParamList = {};
 

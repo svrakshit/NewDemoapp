@@ -7,6 +7,8 @@ import Federation from "../MainComponent/Federation";
 const SelectFederation = () => {
   return (
     <SafeAreaView style={styles.container}>
+                  
+                  
                   <Navbar />
     
 

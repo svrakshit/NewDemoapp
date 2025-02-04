@@ -3,10 +3,10 @@ import { StyleSheet, View, Alert } from 'react-native';
 import { Input, Button, Icon, Text } from 'react-native-elements';
 import api from '../service/api/apiInterceptors';
 import { mmkvStorage } from '../service/storage';
-import auth from '@react-native-firebase/auth';
+
 ;
 import { StackNavigationProp } from '@react-navigation/stack';
-import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
+
 
 interface LoginAppProps {
   navigation: StackNavigationProp<any>; 
@@ -14,7 +14,7 @@ interface LoginAppProps {
 
 const  LoginApp: React.FC<LoginAppProps> = ({ navigation }) => {
   const [mobileno, setMobileno] = useState('9990665359');
-  const [password, setPassword] = useState('Password@123');
+  const [password, setPassword] = useState('Onion@2025');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -37,7 +37,7 @@ const  LoginApp: React.FC<LoginAppProps> = ({ navigation }) => {
         const responseData = response.data;
         mmkvStorage.setItem('userinfo', JSON.stringify(responseData));
         mmkvStorage.setItem('token', responseData?.token);
-        navigation.navigate('Drawernavigator');
+        navigation.navigate('MainScreen');
         
 
    
@@ -53,45 +53,7 @@ const  LoginApp: React.FC<LoginAppProps> = ({ navigation }) => {
     }
   };
 
-  React.useEffect(() => {
-    GoogleSignin.configure({
-      webClientId: '528873498711-nchsodfmf1j053rs1vgn51l2taal52ji.apps.googleusercontent.com', // Replace with your Firebase Web Client ID
-    });
-  }, []);
-  const handleGoogleLogin = async () => {
-    try {
-      // console.log('Checking Google Play services...');
-      await GoogleSignin.hasPlayServices();
-      // console.log('Google Play services available.');
-
-      // console.log('Signing out the current user if already signed in...');
-      await GoogleSignin.signOut(); // Sign out the current user first
-
-      console.log('Prompting user to select a Google account...');
-      const userInfo = await GoogleSignin.signIn(); // User is prompted to choose from available accounts
-      console.log('Google sign-in successful:', userInfo);
-
-      // Get tokens
-      const tokens = await GoogleSignin.getTokens();
-      const idToken = tokens.idToken; // Access the idToken
-      console.log('ID Token:', idToken);
-
-      // Ensure idToken is not undefined
-      if (!idToken) {
-        console.log('idToken not found');
-        return;
-      }
-
-      // Use the idToken to authenticate with Firebase
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      const user = await auth().signInWithCredential(googleCredential);
-
-      console.log('User signed in:', user);
-      navigation.navigate('Sidepanel');
-    } catch (error) {
-      console.log('Google Sign-In Error:', error);
-    }
-  };
+ 
  
  
   return (
@@ -135,13 +97,6 @@ const  LoginApp: React.FC<LoginAppProps> = ({ navigation }) => {
       <Text style={styles.footerText}>Don't have an account? Sign Up</Text>
 
 
-      <GoogleSigninButton
-        style={styles.googleButton}
-       
-        color={GoogleSigninButton.Color.Dark}
-     
-        onPress={handleGoogleLogin}
-      />
 
 
 

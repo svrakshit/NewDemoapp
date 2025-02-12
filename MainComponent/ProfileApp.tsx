@@ -26,7 +26,7 @@ const ProfileApp = () => {
             textStyle={styles.badgeText}
           />
           <Text style={styles.profileName}>John Doe</Text>
-         
+
         </View>
 
         {/* Divider */}

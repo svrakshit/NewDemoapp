@@ -18,19 +18,19 @@ const Drawer = createDrawerNavigator();
 
 
 
-export default function  DispatchDrawernavigator() {
+export default function DispatchDrawernavigator() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 
   return (
- 
-    
-      <Drawer.Navigator
+
+
+    <Drawer.Navigator
       initialRouteName="DispatchDhasboard"
-      
+
       id={undefined}  // Add this line
- 
+
       screenOptions={{
         headerStyle: {
           backgroundColor: '#6200EE',
@@ -47,14 +47,14 @@ export default function  DispatchDrawernavigator() {
           fontWeight: 'bold',
         },
       }}
-      
+
     >
-     
+
       <Drawer.Screen
         name="DispatchDhasboard"
         options={{
           headerShown: false,
-        
+
         }}
         component={DispatchDhasboard}
       />
@@ -62,26 +62,26 @@ export default function  DispatchDrawernavigator() {
         name="GenerateHealthReport"
         options={{
           headerShown: false,
-        
+
         }}
         component={GenerateHealthReport}
       />
 
 
-<Drawer.Screen
+      <Drawer.Screen
         name="HealthReportlist"
         options={{
           headerShown: false,
-         
+
         }}
         component={HealthReportlist}
       />
 
-      
-      
 
 
-       
+
+
+
 
 
 

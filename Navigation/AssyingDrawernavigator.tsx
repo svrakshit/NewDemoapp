@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet ,Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator , DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 
 import Approvedlist from '../Screentwo/Approvedlist';
 import Pendinglist from '../Screentwo/Pendinglist';
@@ -16,22 +16,45 @@ import AssyingDhasboard from '../Screentwo/AssyingDhasboard';
 
 const Drawer = createDrawerNavigator();
 
+function CustomDrawerContent(props) {
+  return (
+    <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1 }}>
+      {/* Top Logo */}
+      <View style={styles.logoContainer}>
+        <Image source={require('../assets/logo.png')} style={styles.logo} />
+      </View>
+      
+      {/* Drawer Items */}
+      <DrawerItemList {...props} />
+      
+      {/* Bottom Logout Button */}
+      {/* <View style={styles.logoutContainer}>
+        <TouchableOpacity style={styles.logoutButton} onPress={() => console.log('Logout pressed') }>
+          <MaterialIcons name="logout" size={24} color="#6200EE" />
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+      </View> */}
+    </DrawerContentScrollView>
+  );
+}
 
 
 
-export default function  AssyingDrawernavigator() {
+
+
+export default function AssyingDrawernavigator() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 
   return (
- 
-    
-      <Drawer.Navigator
+
+
+    <Drawer.Navigator
       initialRouteName="AssyingDhasboard"
-      
+
       id={undefined}  // Add this line
- 
+
       screenOptions={{
         headerStyle: {
           backgroundColor: '#6200EE',
@@ -48,16 +71,16 @@ export default function  AssyingDrawernavigator() {
           fontWeight: 'bold',
         },
       }}
-      
+
     >
-     
 
 
-     <Drawer.Screen
+
+      <Drawer.Screen
         name="AssyingDhasboard"
         options={{
           headerShown: false,
-        
+
         }}
         component={AssyingDhasboard}
       />
@@ -66,9 +89,9 @@ export default function  AssyingDrawernavigator() {
         name="Approvedlist"
         options={{
           headerShown: false,
-        
+
         }}
-        component={ Approvedlist}
+        component={Approvedlist}
       />
 
 
@@ -77,13 +100,13 @@ export default function  AssyingDrawernavigator() {
         name="Pendinglist"
         options={{
           headerShown: false,
-        
+
         }}
         component={Pendinglist}
       />
 
 
-<Drawer.Screen
+      <Drawer.Screen
         name="Rejectedlist"
         options={{
           headerShown: false,
@@ -92,11 +115,11 @@ export default function  AssyingDrawernavigator() {
         component={Rejectedlist}
       />
 
-      
-      
 
 
-       
+
+
+
 
 
 
@@ -119,5 +142,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#6200EE',
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    padding: 20,
   },
 });

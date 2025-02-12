@@ -12,9 +12,9 @@ const List = () => {
 
         <SafeAreaView style={styles.container}>
             <Navbar navigation={undefined} />
-     
 
-          <ListApp />
+
+            <ListApp />
 
 
         </SafeAreaView>

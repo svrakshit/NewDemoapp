@@ -6,9 +6,9 @@ const AssyingDhasboard = () => {
   return (
     <SafeAreaView >
     <Navbar navigation={undefined} />
-          <Text>Assying Dhasboard </Text>
+    <Text>Assying Dhasboard </Text>
 
-   </SafeAreaView>
+     </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({

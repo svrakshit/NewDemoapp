@@ -10,10 +10,10 @@ const Login = () => {
 
         <SafeAreaView style={styles.container}>
             <Navbar navigation={undefined} />
-            
-       
-     
-    
+
+
+
+
 
 
         </SafeAreaView>

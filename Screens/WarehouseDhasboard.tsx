@@ -8,7 +8,7 @@ const Dhasboard = ({ navigation }) => {
         <SafeAreaView style={styles.container}>
             <Navbar navigation={undefined} />
           
-            <Cards />
+      <Cards />
 
            
         </SafeAreaView>

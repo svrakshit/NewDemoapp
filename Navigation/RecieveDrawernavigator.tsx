@@ -19,19 +19,19 @@ const Drawer = createDrawerNavigator();
 
 
 
-export default function  RecieveDrawernavigator() {
+export default function RecieveDrawernavigator() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 
   return (
- 
-    
-      <Drawer.Navigator
+
+
+    <Drawer.Navigator
       initialRouteName="RecieveDhasbaord"
-      
+
       id={undefined}  // Add this line
- 
+
       screenOptions={{
         headerStyle: {
           backgroundColor: '#6200EE',
@@ -48,14 +48,14 @@ export default function  RecieveDrawernavigator() {
           fontWeight: 'bold',
         },
       }}
-      
+
     >
-     
+
       <Drawer.Screen
         name="RecieveDhasbaord"
         options={{
           headerShown: false,
-        
+
         }}
         component={RecieveDhasbaord}
       />
@@ -63,13 +63,13 @@ export default function  RecieveDrawernavigator() {
         name="GenerateRecieveHealthReport"
         options={{
           headerShown: false,
-        
+
         }}
         component={GenerateRecieveHealthReport}
       />
 
 
-<Drawer.Screen
+      <Drawer.Screen
         name="RecieveHealthReport"
         options={{
           headerShown: false,
@@ -78,11 +78,11 @@ export default function  RecieveDrawernavigator() {
         component={RecieveHealthReport}
       />
 
-      
-      
 
 
-       
+
+
+
 
 
 

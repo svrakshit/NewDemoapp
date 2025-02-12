@@ -9,7 +9,7 @@ const SelectFederation = () => {
     <SafeAreaView style={styles.container}>
                   
                   
-                  <Navbar />
+                  <Navbar navigation={undefined}/>
     
 
             <Federation />

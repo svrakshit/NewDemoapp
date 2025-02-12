@@ -11,7 +11,7 @@ const Profile = () => {
     return (
 
         <SafeAreaView style={styles.container}>
-            <Navbar />
+            <Navbar  navigation={undefined}/>
             <ProfileApp />
 
    

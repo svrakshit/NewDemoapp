@@ -1,18 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { StatusBar, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { RootStackParamList } from './type';
+import { RootStackParamList } from '../types/Type';
 
-// // Navigation types define karo
-// type RootStackParamList = {
-//   WarehouseDrawernavigator: undefined;
-//   AssyingDrawernavigator: undefined;
-//   DispatchDrawernavigator: undefined;
-//   RecieveDrawernavigator: undefined;
-// };
-
+// Navigation types define karo
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const MainScreen = () => {
@@ -27,13 +20,18 @@ const MainScreen = () => {
 
   return (
     <View style={styles.container}>
+      {/* Status Bar Customized */}
+      <StatusBar backgroundColor="#F6A001" barStyle="light-content" />
+      
       {cards.map((card) => (
         <TouchableOpacity
           key={card.id}
           style={styles.card}
           onPress={() => navigation.navigate(card.screen as keyof RootStackParamList)}
         >
-          <Icon name={card.icon} size={30} color="#4CAF50" style={styles.icon} />
+          <View style={styles.iconContainer}>
+            <Icon name={card.icon} size={28} color="#fff" />
+          </View>
           <Text style={styles.cardText}>{card.title}</Text>
         </TouchableOpacity>
       ))}
@@ -44,26 +42,34 @@ const MainScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#F4F4F4',
+    paddingVertical: 20,
   },
   card: {
-    width: '90%',
-    marginVertical: 10,
-    padding: 20,
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    elevation: 5,
+    width: '85%',
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 18,
+    borderRadius: 15,
+    elevation: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
-    shadowRadius: 3,
+    shadowRadius: 5,
+    marginVertical: 10,
+    borderBottomWidth : 1.5,
+    borderBottomColor : '#F6A001'
   },
-  icon: {
+  iconContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#F6A001",
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 15,
   },
   cardText: {

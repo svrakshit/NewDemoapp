@@ -10,6 +10,7 @@ import { DrawerActions } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import { NavigationProp } from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'; 
+import colors from '../theme/Color';
 // Initialize MMKV
 const storage = new MMKV();
 
@@ -102,36 +103,37 @@ const Navbar: React.FC<Props> = () => {
 
   return (
     <SafeAreaView>
-      <HeaderRNE
-        leftComponent={{
-          icon: 'menu',
-          color: '#fff',
-          onPress: handleMenuPress, // Open the drawer
-        }}
-        centerComponent={
-          <Text style={styles.headerTitle}>{currentRouteName}</Text>
-        }
-        rightComponent={
-          <View style={styles.rightComponentContainer}>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={selectedScreen}
-                onValueChange={handleSelectScreen}
-                style={styles.picker}
-              >
-                <Picker.Item label="Assying" value="AssyingDrawernavigator" />
-                <Picker.Item label="Warehouse Checklist" value="WarehouseDrawernavigator" />
-                <Picker.Item label="Dispatch Health Report" value="DispatchDrawernavigator" />
-                <Picker.Item label="Recieve Health Report" value="RecieveDrawernavigator" />
-              </Picker>
-            </View>
-            <TouchableOpacity onPress={handleLogoutPress} style={styles.logoutButton}>
-            <MaterialIcons name="logout" size={20} color="#fff" />
-            </TouchableOpacity>
-          </View>
-        }
-        backgroundColor="#007BFF"
-      />
+    <HeaderRNE
+  backgroundColor= "#F79B00"  // Change to Red
+  leftComponent={{
+    icon: 'menu',
+    color: '#fff',
+    onPress: handleMenuPress, // Open the drawer
+  }}
+  centerComponent={
+    <Text style={styles.headerTitle}>{currentRouteName}</Text>
+  }
+  rightComponent={
+    <View style={styles.rightComponentContainer}>
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={selectedScreen}
+          onValueChange={handleSelectScreen}
+          style={styles.picker}
+        >
+          <Picker.Item label="Assying" value="AssyingDrawernavigator" />
+          <Picker.Item label="Warehouse Checklist" value="WarehouseDrawernavigator" />
+          <Picker.Item label="Dispatch Health Report" value="DispatchDrawernavigator" />
+          <Picker.Item label="Recieve Health Report" value="RecieveDrawernavigator" />
+        </Picker>
+      </View>
+      <TouchableOpacity onPress={handleLogoutPress} style={styles.logoutButton}>
+        <MaterialIcons name="logout" size={20} color="#fff" />
+      </TouchableOpacity>
+    </View>
+  }
+/>
+
     </SafeAreaView>
   );
 };
@@ -139,7 +141,7 @@ const Navbar: React.FC<Props> = () => {
 const styles = StyleSheet.create({
   headerTitle: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   rightComponentContainer: {

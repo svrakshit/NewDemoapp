@@ -12,5 +12,24 @@ export type RootStackParamList = {
     DispatchDrawernavigator: undefined;
     RecieveDrawernavigator: undefined;
     HealthReportselect: undefined;
+    
+    DispatchRecieve :  { quantitymt: string };
+    Dhasboard : undefined;
+
+    "Generate Health Report": undefined;
+    "Health Report list": undefined;
+    "Dispatch Report list": undefined;
+    "Dispatch Truck list": undefined;
+    "Recieve Truck list": undefined;
+    HealthReport :  { 
+      truckNumber: string;
+  grossWeight: string;
+  netWeight: string;
+  tareWeight: string;
+  bagCount: string;
+  size: string;
+  selectedDate: Date;
+     };
+
   };
   

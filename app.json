@@ -21,7 +21,11 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.smaurya.QRCodeScannerApp",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+     "permissions": [
+      "CAMERA",
+      "CAMERA_ROLL"
+    ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

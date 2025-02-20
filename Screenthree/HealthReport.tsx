@@ -1,90 +1,39 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Switch, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { View, Text, TextInput, Switch, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { useFocusEffect } from '@react-navigation/native';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { RootStackParamList } from '../types/Type';
 
-const HealthReport = ({ route, navigation }) => {
-  // Existing state variables
+const HealthReport = () => {
+  const route = useRoute<RouteProp<RootStackParamList, 'HealthReport'>>();
+
+  const {
+    truckNumber,
+    grossWeight,
+    netWeight,
+    tareWeight,
+    bagCount,
+    size,
+    selectedDate = new Date(route.params.selectedDate)
+  } = route.params || {};
+
+  const formattedDate = selectedDate instanceof Date
+    ? selectedDate.toLocaleDateString()
+    : new Date(selectedDate).toLocaleDateString();
+
   const [stainingColour, setStainingColour] = useState(false);
   const [stainingColourPercent, setStainingColourPercent] = useState('');
-  
-  const [blackSmutOnion, setBlackSmatOnion] = useState(false);
+  const [blackSmutOnion, setBlackSmutOnion] = useState(false);
   const [BlackSmutPercent, setBlackSmatPercent] = useState('');
-  
   const [sproutedOnion, setSproutedOnion] = useState(false);
   const [sproutedPercent, setSproutedPercent] = useState('');
-  
   const [spoiledOnion, setSpoiledOnion] = useState(false);
   const [spoiledPercent, setSpoiledPercent] = useState('');
-
-  // New state variables for OnionSkin and Moisture
   const [onionSkin, setOnionSkin] = useState('DOUBLE');
   const [moisture, setMoisture] = useState('DRY');
   const [onionSkinPercent, setOnionSkinPercent] = useState('');
   const [moisturePercent, setMoisturePercent] = useState('');
-
-  // New field for FPC Person Name
   const [fpcPersonName, setFpcPersonName] = useState('');
-
-  useFocusEffect(
-    React.useCallback(() => {
-      // Reset state when screen is focused
-      setStainingColour(false);
-      setStainingColourPercent('');
-      setBlackSmatOnion(false);
-      setBlackSmatPercent('');
-      setSproutedOnion(false);
-      setSproutedPercent('');
-      setSpoiledOnion(false);
-      setSpoiledPercent('');
-      // setOnionSkin('NONE');
-      // setMoisture('NONE');
-      setOnionSkin('DOUBLE');
-      setMoisture('DRY');
-      setOnionSkinPercent('');
-      setMoisturePercent('');
-      setFpcPersonName('');
-    }, [])
-  );
-
-  const handleNext = () => {
-    // Validation logic
-    if (
-      (stainingColour && !stainingColourPercent) ||
-      (blackSmutOnion && !BlackSmutPercent) ||
-      (sproutedOnion && !sproutedPercent) ||
-      (spoiledOnion && !spoiledPercent) ||
-      !onionSkinPercent ||
-      !moisturePercent ||
-      !fpcPersonName
-    ) {
-      Alert.alert('Error', 'Please fill in all required fields.');
-      return;
-    }
-
-    // Combine the previous screen's data with this screen's data and navigate to the next screen
-    const previousData = route.params || {};
-    const currentData = {
-      stainingColour,
-      stainingColourPercent,
-      blackSmutOnion,
-      BlackSmutPercent,
-      sproutedOnion,
-      sproutedPercent,
-      spoiledOnion,
-      spoiledPercent,
-      onionSkin,
-      onionSkinPercent,
-      moisture,
-      moisturePercent,
-      fpcPersonName,
-    };
-
-    navigation.navigate('PhotoClick', {
-      ...previousData,
-      ...currentData,
-    });
-  };
 
   return (
     <KeyboardAvoidingView
@@ -93,6 +42,15 @@ const HealthReport = ({ route, navigation }) => {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
     >
       <ScrollView contentContainerStyle={styles.container}>
+        
+        <Text>Truck Number: {truckNumber} kg</Text>
+        <Text>Gross Weight: {grossWeight} kg</Text>
+        <Text>Net Weight: {netWeight} kg</Text>
+        <Text>Tare Weight: {tareWeight} kg</Text>
+        <Text>Bag Count: {bagCount}</Text>
+        <Text>Size: {size}</Text>
+        <Text>Selected Date: {formattedDate}</Text>
+
         <View style={styles.switchContainer}>
           <Text>Staining Colour</Text>
           <Switch
@@ -118,7 +76,7 @@ const HealthReport = ({ route, navigation }) => {
           <Switch
             value={blackSmutOnion}
             onValueChange={(value) => {
-              setBlackSmatOnion(value);
+              setBlackSmutOnion(value);
               if (!value) setBlackSmatPercent('');
             }}
           />
@@ -173,7 +131,7 @@ const HealthReport = ({ route, navigation }) => {
           />
         )}
 
-        {/* New OnionSkin Dropdown */}
+        {/* OnionSkin Dropdown */}
         <View style={styles.dropdownContainer}>
           <Text>Onion Skin</Text>
           <View style={styles.pickerWrapper}>
@@ -195,7 +153,7 @@ const HealthReport = ({ route, navigation }) => {
           keyboardType="numeric"
         />
 
-        {/* New Moisture Dropdown */}
+        {/* Moisture Dropdown */}
         <View style={styles.dropdownContainer}>
           <Text>Moisture</Text>
           <View style={styles.pickerWrapper}>
@@ -223,11 +181,6 @@ const HealthReport = ({ route, navigation }) => {
           value={fpcPersonName}
           onChangeText={setFpcPersonName}
         />
-        
-        <Button
-          title="Next"
-          onPress={handleNext}
-        />
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -254,18 +207,18 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     borderColor: '#ccc',
-    height: 50,  // Match the height of the text inputs
+    height: 50, // Match the height of the text inputs
     justifyContent: 'center',
   },
   picker: {
-    height: 50,  // Match the height of the text inputs
+    height: 50, // Match the height of the text inputs
   },
   input: {
     backgroundColor: '#fff',
     padding: 10,
     marginBottom: 15,
     borderRadius: 5,
-    height: 50,  // Ensure all inputs are the same height
+    height: 50, // Ensure all inputs are the same height
   },
 });
 

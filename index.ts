@@ -3,11 +3,15 @@ import { LogBox } from 'react-native';
 
 import App from './App';
 
-// registerRootComponent calls AppRegistry.registerComponent('main', () => App);
-// It also ensures that whether you load the app in Expo Go or in a native build,
-// the environment is set up appropriately
+// Disable all warnings in both dev and production
+if (console) {
+  console.warn = () => {}; // Override console.warn to prevent any warnings from showing up
+}
 
+// Ignore specific warnings via LogBox
 LogBox.ignoreLogs([
-    'Warning: TextElement: Support for defaultProps will be removed',
-  ]);
+  'Warning: TextElement: Support for defaultProps will be removed',
+  'Warning: Text strings must be rendered within a <Text> component',
+]);
+
 registerRootComponent(App);

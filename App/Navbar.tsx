@@ -1,101 +1,38 @@
 import React, { useContext } from 'react';
-import { StyleSheet, Alert, View, TouchableOpacity } from 'react-native';
-import { Header as HeaderRNE } from 'react-native-elements';
-import { useRoute } from '@react-navigation/native';
+import { StyleSheet, Alert, View, TouchableOpacity, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Text from './Text'; // Import custom Text component
-import { MMKV } from 'react-native-mmkv';
-import { NavigationContext } from '@react-navigation/native'; // Ensure this is correctly imported
+import { NavigationContext } from '@react-navigation/native';
 import { DrawerActions } from '@react-navigation/native';
-import { Picker } from '@react-native-picker/picker';
-import { NavigationProp } from '@react-navigation/native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'; 
-import colors from '../theme/Color';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { MMKV } from 'react-native-mmkv';
+
 // Initialize MMKV
 const storage = new MMKV();
 
-// Define RootStackParamList with all your screens
-type RootStackParamList = {
-  AssyingDrawernavigator: undefined; // Define your screens here
-  LoginApp : undefined;
-  WarehouseDrawernavigator : undefined;
-  DispatchDrawernavigator : undefined;
-  RecieveDrawernavigator :  undefined;
-
-  
-  // other screens
-};
-
-type Props = {
-  navigation: NavigationProp<RootStackParamList>;
-};
-
-const Navbar: React.FC<Props> = () => {
-  // Typecast NavigationContext to NavigationProp
-  const navigation = useContext(NavigationContext) as NavigationProp<RootStackParamList>;
-
-  const route = useRoute();
-  const currentRouteName = route.name;
-
-  const [selectedScreen, setSelectedScreen] = React.useState('');
-
-  const handleSelectScreen = (value: string) => {
-    setSelectedScreen(value);
-    if (value === 'AssyingDrawernavigator') {
-      navigation.navigate('AssyingDrawernavigator');
-    }
-    if (value === 'WarehouseDrawernavigator') {
-      navigation.navigate('WarehouseDrawernavigator');
-    }
-
-    if (value === 'DispatchDrawernavigator') {
-      navigation.navigate('DispatchDrawernavigator');
-    }
-  if (value === 'RecieveDrawernavigator') {
-      navigation.navigate('RecieveDrawernavigator');
-    }
-  };
+const Navbar: React.FC = () => {
+  const navigation = useContext(NavigationContext);
+  const currentRouteName = navigation?.getState().routes[navigation.getState().index].name;
 
   const handleMenuPress = () => {
     if (navigation) {
-      navigation.dispatch(DrawerActions.openDrawer()); // Opening the drawer
+      navigation.dispatch(DrawerActions.openDrawer());
     }
   };
 
   const handleLogoutPress = () => {
-    Alert.alert(
-      'Confirm Logout',
-      'Are you sure you want to log out?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Log Out',
-          style: 'destructive',
-          onPress: () => {
-            processLogout();
-          },
-        },
-      ],
-      { cancelable: true }
-    );
+    Alert.alert('Confirm Logout', 'Are you sure you want to log out?', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Log Out', style: 'destructive', onPress: processLogout },
+    ]);
   };
 
   const processLogout = () => {
     try {
-      // Remove token or user data from MMKV storage
-      storage.delete('userToken'); // Correct method for deleting an item
+      storage.delete('userToken');
       console.log('User logged out successfully');
-      
-      // Use reset to navigate to the Login screen and clear the navigation stack
       if (navigation) {
-        navigation.reset({
-          routes: [{ name: 'LoginApp' }],
-        });
+        navigation.reset({ routes: [{ name: 'LoginApp' }] });
       }
-
     } catch (error) {
       console.error('Error during logout:', error);
     }
@@ -103,72 +40,57 @@ const Navbar: React.FC<Props> = () => {
 
   return (
     <SafeAreaView>
-    <HeaderRNE
-  backgroundColor= "#F79B00"  // Change to Red
-  leftComponent={{
-    icon: 'menu',
-    color: '#fff',
-    onPress: handleMenuPress, // Open the drawer
-  }}
-  centerComponent={
-    <Text style={styles.headerTitle}>{currentRouteName}</Text>
-  }
-  rightComponent={
-    <View style={styles.rightComponentContainer}>
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={selectedScreen}
-          onValueChange={handleSelectScreen}
-          style={styles.picker}
-        >
-          <Picker.Item label="Assying" value="AssyingDrawernavigator" />
-          <Picker.Item label="Warehouse Checklist" value="WarehouseDrawernavigator" />
-          <Picker.Item label="Dispatch Health Report" value="DispatchDrawernavigator" />
-          <Picker.Item label="Recieve Health Report" value="RecieveDrawernavigator" />
-        </Picker>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={handleMenuPress} style={styles.leftComponent}>
+          <MaterialIcons name="menu" size={30} color="#fff" />
+        </TouchableOpacity>
+        <View style={styles.centerComponent}>
+          <Text style={styles.headerTitle}>{currentRouteName}</Text>
+        </View>
+        <TouchableOpacity onPress={handleLogoutPress} style={styles.rightComponent}>
+          <MaterialIcons name="logout" size={20} color="#fff" />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={handleLogoutPress} style={styles.logoutButton}>
-        <MaterialIcons name="logout" size={20} color="#fff" />
-      </TouchableOpacity>
-    </View>
-  }
-/>
-
+      <View style={styles.circleBackground} /> {/* Circle Background */}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#F79B00',
+    paddingVertical: 30,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  leftComponent: {
+    flex: 1,
+  },
+  centerComponent: {
+    flex: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rightComponent: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
   headerTitle: {
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
   },
-  rightComponentContainer: {
-    flexDirection: 'row',
-   
-
-  },
-  pickerContainer: {
-    width: 50,
-  
-   
-  },
-  picker: {
-    height: 40,
-    color: '#fff',
-  },
-  logoutButton: {
-    marginLeft: 10,
-    padding: 5,
-  
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logoutButtonText: {
-    color: '#fff',
-    fontSize: 14,
+  circleBackground: {
+    backgroundColor: '#F6A00191',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    position: 'relative',
+    top: -35,
+    left: 310,
+    zIndex: -1,
   },
 });
 

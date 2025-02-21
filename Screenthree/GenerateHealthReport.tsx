@@ -9,6 +9,11 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/Type';
 import { ImagePickerResponse, launchCamera } from 'react-native-image-picker';
+import styles from '../theme/Healthreport';
+import Footer from '../App/Footer';
+
+import { PermissionsAndroid } from 'react-native';
+
 
 
 type HealthReportSelection = StackNavigationProp<RootStackParamList, 'HealthReportselect'>;
@@ -46,6 +51,8 @@ const GenerateHealthReport = () => {
   });
 
   const [loading, setLoading] = useState(true);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [previousSteps, setPreviousSteps] = useState<number[]>([]);
   const [companyId, setCompanyId] = useState('');
   const [branchId, setBranchId] = useState('');
 
@@ -72,6 +79,27 @@ const GenerateHealthReport = () => {
   const [imageUri, setImageUri] = useState<ImageAsset[]>([]);
 
 
+
+  const requestCameraPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Camera permission granted');
+          openCamera(); // **Agar permission mil gayi to camera open hoga**
+        } else {
+          console.log('Camera permission denied');
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    } else {
+      openCamera(); // iOS ke liye directly open kar do
+    }
+  };
+
   const openCamera = () => {
     launchCamera(
       {
@@ -89,21 +117,34 @@ const GenerateHealthReport = () => {
           console.log('ImagePicker Error: ', response.errorMessage);
         } else if (response.assets && response.assets.length > 0) {
           const capturedImage = response.assets[0];
-  
+
           console.log('Captured image URI:', capturedImage.uri); // Debugging ke liye
-  
+
           const image = {
             uri: capturedImage.uri ?? '',
             fileName: capturedImage.fileName || `photo_${Date.now()}.jpg`,
             type: capturedImage.type || 'image/jpeg',
           };
-  
+
           setImageUri((prevImages) => [...prevImages, image]); // **Naye images add honge**
         }
       }
     );
   };
-  
+
+  const handleNext = (nextStep: number) => {
+    setPreviousSteps([...previousSteps, currentStep]); // Store current step in history
+    setCurrentStep(nextStep);
+  };
+
+  const handlePrevious = () => {
+    if (previousSteps.length > 0) {
+      const lastStep = previousSteps[previousSteps.length - 1]; // Get the last step
+      setPreviousSteps(previousSteps.slice(0, -1)); // Remove last step from history
+      setCurrentStep(lastStep);
+    }
+  };
+
 
 
 
@@ -115,11 +156,15 @@ const GenerateHealthReport = () => {
     formData.append('companyId', companyId);
     console.log('formcompany', companyId);
     formData.append('branchId', branchId);
+
     formData.append('truckNumber', truckNumber);
     formData.append('grossWeight', grossWeight);
     formData.append("DestinationBranch", destinationBranch);
+    console.log('DestinationBranch', destinationBranch);
     formData.append("DestinationDistrict", destinationDistrict);
+    console.log("DestinationDistrict", destinationDistrict);
     formData.append('tareWeight', tareWeight);
+    console.log('tareWeight', tareWeight);
     formData.append('netWeight', netWeight);
     formData.append('bagCount', bagCount);
     formData.append('size', size);
@@ -146,12 +191,12 @@ const GenerateHealthReport = () => {
       const uris = imageUri.map((image) => image.uri);
       const types = imageUri.map((image) => image.type);
       const fileNames = imageUri.map((image) => image.fileName);  // ✅ Corrected
-    
+
       console.log('Only URIs:', uris);
       console.log('Only Types:', types);
       console.log('Only FileNames:', fileNames);
 
-   
+
 
 
       imageUri.forEach((imageUri) => {
@@ -161,9 +206,9 @@ const GenerateHealthReport = () => {
           type: imageUri.type,
         } as any);
       });
-    
 
-   
+
+
 
       imageUri.forEach((image) => {
         console.log('Keyhsgyh:', 'Files');
@@ -174,10 +219,10 @@ const GenerateHealthReport = () => {
         });
       });
 
-      
 
 
-      
+
+
     }
 
     try {
@@ -188,6 +233,7 @@ const GenerateHealthReport = () => {
       });
       console.log('Form submitted successfully:', response.data);
       alert('Health Report Submitted Successfully!');
+      setCurrentStep(1);
     } catch (error) {
       console.error('Error submitting form:', error);
       alert('Failed to submit Health Report. Please try again.');
@@ -235,14 +281,12 @@ const GenerateHealthReport = () => {
   const fetchData3 = async (companyId: any) => {
     try {
       const response = await api.get(`/api/group?GroupType=Branch&BranchType=Receiving&ApprovalStatus=APPROVED&CompanyId=${companyId}`);
-
-
       setData3(response.data);
 
 
     } catch (error) {
       console.error('Error fetching data3:', error);
-      console.log('else');
+
     }
   };
   const fetchData5 = async (branchId: any) => {
@@ -322,340 +366,174 @@ const GenerateHealthReport = () => {
     >
       <SafeAreaView style={styles.container}>
         <Navbar />
-
-
         <ScrollView contentContainerStyle={styles.scrollView}>
 
           <View style={styles.HeadingContainer}>
             <Text style={styles.title}> Generate Health Report</Text>
-           
-          </View>
-
-
-          <View style={styles.onecontainers}>
-
-            <View style={styles.content}>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  selectedValue={selectedValues.picker2}
-                  onValueChange={(value) => handleValueChange(value, 'picker2')}
-                  style={styles.picker}
-                >
-                  <Picker.Item label="Select Company" value="" />
-                  {data2.map((item, idx) => (
-                    <Picker.Item key={idx} label={item.text} value={item.value} />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-            <View style={styles.content}>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  selectedValue={selectedValues.picker3}
-                  onValueChange={(value) => handleValueChanges(value, 'picker3')}
-                  style={styles.picker}
-                >
-                  <Picker.Item label="Select Branch" value="" />
-                  {data3.map((item, idx) => (
-                    <Picker.Item key={idx} label={item.name} value={item.id} /> // yaha value ko id set kiya hai
-                  ))}
-                </Picker>
-              </View>
-
-            </View>
-
-
-
-
-
-
-            <View style={styles.content}>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  selectedValue={selectedValues.picker5}
-
-
-                  style={styles.picker}
-                >
-                  <Picker.Item label="Select storage location" value="" />
-                  {data5.map((item, idx) => (
-                    <Picker.Item key={idx} label={item.name} value={item.text} />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-
-            {/* <View style={styles.content}>
-          <TouchableOpacity style={styles.button} onPress={handlesubmitPress}>
-            <Text style={styles.buttonText}>Next</Text>
-          </TouchableOpacity>
-        </View> */}
-          </View>
-
-
-          <View style={styles.secondcontainers}>
-
-
-            <TextInput
-              placeholder="Enter Destination Branch"
-              value={destinationBranch}
-              onChangeText={setDestinationBranch}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Enter Destination District"
-              value={destinationDistrict}
-              onChangeText={setDestinationDistrict}
-              style={styles.input}
-            />
-            <TextInput
-              maxLength={12}
-              style={styles.input}
-              placeholder="Truck Number"
-              value={truckNumber}
-              autoCapitalize="characters"
-              onChangeText={(text) => setTruckNumber(text.toUpperCase())}
-            />
-
-            <TextInput
-              style={styles.input}
-              placeholder="Gross Weight(KG)"
-              value={grossWeight}
-              onChangeText={setGrossWeight}
-              keyboardType="numeric"
-            />
-
-            <TextInput
-              style={styles.input}
-              placeholder="Tare Weight(KG)"
-              value={tareWeight}
-              onChangeText={setTareWeight}
-              keyboardType="numeric"
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Net Weight(KG)"
-              value={netWeight}
-
-              keyboardType="numeric"
-            />
-
-
-
-            <TextInput
-              style={styles.input}
-              placeholder="Truck Number"
-              value={selectedDate ? selectedDate.toLocaleDateString() : ''}
-              onFocus={() => setShowDatePicker(true)} // Trigger date picker on input click
-            />
-
-
-            {/* Date Picker */}
-            {showDatePicker && (
-              <DateTimePicker
-                value={selectedDate}
-                mode="date"
-                display="default"
-                onChange={onChangeDate}
-              />
-            )}
-
-            <TextInput
-              style={styles.input}
-              placeholder="Bag Count"
-              value={bagCount}
-              onChangeText={setBagCount}
-              keyboardType="numeric"
-            />
-            {
-              isComment == false ?
-                (<TextInput
-                  style={styles.input}
-                  placeholder="Size"
-                  value={size}
-                  onChangeText={setSize}
-                  keyboardType="numeric"
-                />) : (
-                  <>
-                  </>
-                )
-            }
-
-
-
-
-
-
 
           </View>
 
 
-          <View style={styles.thirdcontainers}>
-            <View style={styles.switchContainer}>
-              <Text>Staining Colour</Text>
-              <Switch
-                value={stainingColour}
-                onValueChange={(value) => {
-                  setStainingColour(value);
-                  if (!value) setStainingColourPercent('');
-                }}
-              />
-            </View>
-            {stainingColour && (
-              <TextInput
-                style={styles.input}
-                placeholder="Staining Colour Percent"
-                value={stainingColourPercent}
-                onChangeText={(text) => setStainingColourPercent(text)}
-                keyboardType="numeric"
-              />
-            )}
+          {currentStep === 1 && (
+            <View style={styles.onecontainers}>
 
-            <View style={styles.switchContainer}>
-              <Text>Black Smat Onion</Text>
-              <Switch
-                value={blackSmutOnion}
-                onValueChange={(value) => {
-                  setBlackSmutOnion(value);
-                  if (!value) setBlackSmatPercent('');
-                }}
-              />
-            </View>
-            {blackSmutOnion && (
-              <TextInput
-                style={styles.input}
-                placeholder="Black Smat Percent"
-                value={BlackSmutPercent}
-                onChangeText={(text) => setBlackSmatPercent(text)}
-                keyboardType="numeric"
-              />
-            )}
-
-            <View style={styles.switchContainer}>
-              <Text>Sprouted Onion</Text>
-              <Switch
-                value={sproutedOnion}
-                onValueChange={(value) => {
-                  setSproutedOnion(value);
-                  if (!value) setSproutedPercent('');
-                }}
-              />
-            </View>
-            {sproutedOnion && (
-              <TextInput
-                style={styles.input}
-                placeholder="Sprouted Percent"
-                value={sproutedPercent}
-                onChangeText={(text) => setSproutedPercent(text)}
-                keyboardType="numeric"
-              />
-            )}
-
-            <View style={styles.switchContainer}>
-              <Text>Spoiled Onion</Text>
-              <Switch
-                value={spoiledOnion}
-                onValueChange={(value) => {
-                  setSpoiledOnion(value);
-                  if (!value) setSpoiledPercent('');
-                }}
-              />
-            </View>
-            {spoiledOnion && (
-              <TextInput
-                style={styles.input}
-                placeholder="Spoiled Percent"
-                value={spoiledPercent}
-                onChangeText={(text) => setSpoiledPercent(text)}
-                keyboardType="numeric"
-              />
-            )}
-
-            {/* OnionSkin Dropdown */}
-            <View style={styles.dropdownContainer}>
-              <Text>Onion Skin</Text>
-              <View style={styles.pickerWrapper}>
-                <Picker
-                  selectedValue={onionSkin}
-                  onValueChange={(itemValue) => setOnionSkin(itemValue)}
-                  style={styles.picker}
-                >
-                  <Picker.Item label="DOUBLE" value="DOUBLE" />
-                  <Picker.Item label="SINGLE" value="SINGLE" />
-                </Picker>
+              <View style={styles.content}>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={selectedValues.picker2}
+                    onValueChange={(value) => handleValueChange(value, 'picker2')}
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="Select Company" value="" />
+                    {data2.map((item, idx) => (
+                      <Picker.Item key={idx} label={item.text} value={item.value} />
+                    ))}
+                  </Picker>
+                </View>
               </View>
-            </View>
-            <TextInput
-              style={styles.input}
-              placeholder="Onion Skin Percent"
-              value={onionSkinPercent}
-              onChangeText={setOnionSkinPercent}
-              keyboardType="numeric"
-            />
 
-            {/* Moisture Dropdown */}
-            <View style={styles.dropdownContainer}>
-              <Text>Moisture</Text>
-              <View style={styles.pickerWrapper}>
-                <Picker
-                  selectedValue={moisture}
-                  onValueChange={(itemValue) => setMoisture(itemValue)}
-                  style={styles.picker}
-                >
-                  <Picker.Item label="DRY" value="DRY" />
-                  <Picker.Item label="WET" value="WET" />
-                </Picker>
+              <View style={styles.content}>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={selectedValues.picker3}
+                    onValueChange={(value) => handleValueChanges(value, 'picker3')}
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="Select Branch" value="" />
+                    {data3.map((item, idx) => (
+                      <Picker.Item key={idx} label={item.name} value={item.id} /> // yaha value ko id set kiya hai
+                    ))}
+                  </Picker>
+                </View>
+
               </View>
+
+              <View style={styles.content}>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={selectedValues.picker5}
+
+
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="Select storage location" value="" />
+                    {data5.map((item, idx) => (
+                      <Picker.Item key={idx} label={item.name} value={item.text} />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
+
+             
+              <View style={styles.buttoncontent}>
+              <TouchableOpacity style={styles.button} onPress={() =>  handleNext(2)}>
+      <Text style={styles.buttonText}>Next</Text>
+    </TouchableOpacity>
+    </View>
+
+
+
             </View>
-            <TextInput
-              style={styles.input}
-              placeholder="Moisture Percent"
-              value={moisturePercent}
-              onChangeText={setMoisturePercent}
-              keyboardType="numeric"
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="FPC Person Name"
-              value={fpcPersonName}
-              onChangeText={setFpcPersonName}
-            />
+          )}
+
+          {currentStep === 2 && (
+            <View style={styles.secondcontainers}>
 
 
-            <View>
 
-              <Text>Spoiled</Text>
-
-              <Switch
-                value={isSpoiledPercentVisible}
-                onValueChange={setIsSpoiledPercentVisible}
+              <TextInput
+                placeholder="Enter Destination Branch"
+                value={destinationBranch}
+                onChangeText={setDestinationBranch}
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="Enter Destination District"
+                value={destinationDistrict}
+                onChangeText={setDestinationDistrict}
+                style={styles.input}
+              />
+              <TextInput
+                maxLength={12}
+                style={styles.input}
+                placeholder="Truck Number"
+                value={truckNumber}
+                autoCapitalize="characters"
+                onChangeText={(text) => setTruckNumber(text.toUpperCase())}
               />
 
-              {isSpoiledPercentVisible && (
-                <TextInput
-                  style={styles.input}
-                  placeholder="Spoiled Percent"
-                  value={SpoliedPercent}
-                  onChangeText={setSpoliedPercent}
-                  keyboardType="numeric"
+              <TextInput
+                style={styles.input}
+                placeholder="Gross Weight(KG)"
+                value={grossWeight}
+                onChangeText={setGrossWeight}
+                keyboardType="numeric"
+              />
+
+              <TextInput
+                style={styles.input}
+                placeholder="Tare Weight(KG)"
+                value={tareWeight}
+                onChangeText={setTareWeight}
+                keyboardType="numeric"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Net Weight(KG)"
+                value={netWeight}
+
+                keyboardType="numeric"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Truck Number"
+                value={selectedDate ? selectedDate.toLocaleDateString() : ''}
+                onFocus={() => setShowDatePicker(true)} // Trigger date picker on input click
+              />
+              {/* Date Picker */}
+              {showDatePicker && (
+                <DateTimePicker
+                  value={selectedDate}
+                  mode="date"
+                  display="default"
+                  onChange={onChangeDate}
                 />
               )}
 
               <TextInput
                 style={styles.input}
-                placeholder="Branch Person name"
-                value={SpoliedBranch}
-                onChangeText={setSpoliedBranch}
+                placeholder="Bag Count"
+                value={bagCount}
+                onChangeText={setBagCount}
                 keyboardType="numeric"
               />
-              <TextInput
-                style={styles.input}
-                placeholder="Type Comments"
-                value={SpoliedComment}
-                onChangeText={setSpoliedComment}
-              />
+              {
+                isComment == false ?
+                  (<TextInput
+                    style={styles.input}
+                    placeholder="Size"
+                    value={size}
+                    onChangeText={setSize}
+                    keyboardType="numeric"
+                  />) : (
+                    <>
+                    </>
+                  )
+              }
+
+            
+              <View style={styles.buttoncontent} >
+              <TouchableOpacity style={styles.button} onPress={() => handleNext(currentStep + 1)}>
+            <Text style={styles.buttonText}>Next</Text>
+             </TouchableOpacity>
+
+          
+       <TouchableOpacity style={styles.button} onPress={handlePrevious}>
+      <Text style={styles.buttonText}>Previous</Text>
+         </TouchableOpacity>
+         
+         </View>
+
 
 
 
@@ -663,264 +541,216 @@ const GenerateHealthReport = () => {
 
 
             </View>
+          )}
+
+          {currentStep === 3 && (
+            <View>
 
 
+              <View style={styles.thirdcontainers}>
+                <View style={styles.switchContainer}>
+                  <Text style={styles.text}>Staining Colour</Text>
+                  <Switch
+                    value={stainingColour}
+                    onValueChange={(value) => {
+                      setStainingColour(value);
+                      if (!value) setStainingColourPercent('');
+                    }}
+                  />
+                </View>
+                {stainingColour && (
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Staining Colour Percent"
+                    value={stainingColourPercent}
+                    onChangeText={(text) => setStainingColourPercent(text)}
+                    keyboardType="numeric"
+                  />
+                )}
+
+                <View style={styles.switchContainer}>
+                  <Text style={styles.text}>Black Smat Onion</Text>
+                  <Switch
+                    value={blackSmutOnion}
+                    onValueChange={(value) => {
+                      setBlackSmutOnion(value);
+                      if (!value) setBlackSmatPercent('');
+                    }}
+                  />
+                </View>
+                {blackSmutOnion && (
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Black Smat Percent"
+                    value={BlackSmutPercent}
+                    onChangeText={(text) => setBlackSmatPercent(text)}
+                    keyboardType="numeric"
+                  />
+                )}
+
+                <View style={styles.switchContainer}>
+                  <Text style={styles.text}>Sprouted Onion</Text>
+                  <Switch
+                    value={sproutedOnion}
+                    onValueChange={(value) => {
+                      setSproutedOnion(value);
+                      if (!value) setSproutedPercent('');
+                    }}
+                  />
+                </View>
+                {sproutedOnion && (
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Sprouted Percent"
+                    value={sproutedPercent}
+                    onChangeText={(text) => setSproutedPercent(text)}
+                    keyboardType="numeric"
+                  />
+                )}
+
+                <View style={styles.switchContainer}>
+                  <Text style={styles.text}>Spoiled Onion</Text>
+                  <Switch
+                    value={spoiledOnion}
+                    onValueChange={(value) => {
+                      setSpoiledOnion(value);
+                      if (!value) setSpoiledPercent('');
+                    }}
+                  />
+                </View>
+                {spoiledOnion && (
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Spoiled Percent"
+                    value={spoiledPercent}
+                    onChangeText={(text) => setSpoiledPercent(text)}
+                    keyboardType="numeric"
+                  />
+                )}
+
+                {/* OnionSkin Dropdown */}
+                <View style={styles.dropdownContainer}>
+                  <Text style={styles.text}>Onion Skin</Text>
+                  <View style={styles.pickerWrapper}>
+                    <Picker
+                      selectedValue={onionSkin}
+                      onValueChange={(itemValue) => setOnionSkin(itemValue)}
+                      style={styles.picker}
+                    >
+                      <Picker.Item label="DOUBLE" value="DOUBLE" />
+                      <Picker.Item label="SINGLE" value="SINGLE" />
+                    </Picker>
+                  </View>
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Onion Skin Percent"
+                  value={onionSkinPercent}
+                  onChangeText={setOnionSkinPercent}
+                  keyboardType="numeric"
+                />
+
+                {/* Moisture Dropdown */}
+                <View style={styles.dropdownContainer}>
+                  <Text style={styles.text}>Moisture</Text>
+                  <View style={styles.pickerWrapper}>
+                    <Picker
+                      selectedValue={moisture}
+                      onValueChange={(itemValue) => setMoisture(itemValue)}
+                      style={styles.picker}
+                    >
+                      <Picker.Item label="DRY" value="DRY" />
+                      <Picker.Item label="WET" value="WET" />
+                    </Picker>
+                  </View>
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Moisture Percent"
+                  value={moisturePercent}
+                  onChangeText={setMoisturePercent}
+                  keyboardType="numeric"
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="FPC Person Name"
+                  value={fpcPersonName}
+                  onChangeText={setFpcPersonName}
+                />
 
 
+                <View>
+
+                  <Text style={styles.text}>Spoiled</Text>
+
+                  <Switch
+                    value={isSpoiledPercentVisible}
+                    onValueChange={setIsSpoiledPercentVisible}
+                  />
+
+                  {isSpoiledPercentVisible && (
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Spoiled Percent"
+                      value={SpoliedPercent}
+                      onChangeText={setSpoliedPercent}
+                      keyboardType="numeric"
+                    />
+                  )}
+
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Branch Person name"
+                    value={SpoliedBranch}
+                    onChangeText={setSpoliedBranch}
+                    keyboardType="numeric"
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Type Comments"
+                    value={SpoliedComment}
+                    onChangeText={setSpoliedComment}
+                  />
+
+                </View>
+              </View>
+
+              <View style={styles.buttoncontent} >
 
 
+              <TouchableOpacity style={styles.button} onPress={requestCameraPermission}>
+            <Text style={styles.buttonText}>Camera</Text>
+             </TouchableOpacity>
 
-          </View>
+             {imageUri.length > 0 &&
+                imageUri.map((img, index) => (
+                  <Image key={index} source={{ uri: img.uri }} style={styles.image} />
+                ))}
 
 
-          <Button title="Capture Weightment Slip" onPress={openCamera} />
+                         
+              <TouchableOpacity style={styles.button}  onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Submit</Text>
+             </TouchableOpacity>
 
-          {imageUri.length > 0 &&
-      imageUri.map((img, index) => (
-        <Image key={index} source={{ uri: img.uri }} style={styles.image} />
-      ))}
+             <TouchableOpacity style={styles.button}  onPress={handlePrevious}>
+            <Text style={styles.buttonText}>Previous</Text>
+             </TouchableOpacity>
 
-          <Button title="Submit" onPress={handleSubmit} />
+             </View>
+            </View>
+          )}
+
+<Footer />
 
         </ScrollView>
-
-
+    
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F7FA',
-  },
-  image: {
-    width: 120,
-    height: 120,
-    marginTop: 10,
-    alignSelf: 'center',
-    borderRadius: 10,
-  },
-  HeadingContainer: {
 
-    paddingLeft: 30,
-    
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: 'black', // Nice blue shade
-  },
-
-  onecontainers: {
-    backgroundColor: '#fffff'
-  },
-  secondcontainers: {
-    padding: 20
-  },
-
-  thirdcontainers: {
-    padding: 20
-  },
-  content: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
-  },
-
-  phototcontainer: {
-    width: 80,
-    height: 80,
-
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    backgroundColor: 'red'
-
-
-  },
-  topRightImage: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: 70,  // Reduce width
-    height: 75,
-
-
-  },
-  pickerContainer: {
-    borderRadius: 40,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#F6A001',
-    width: '94%',
-    height: 50,
-    paddingHorizontal: 13,
-    backgroundColor: '#ffffff',
-    elevation: 14, // Android ke liye shadow
-    shadowColor: 'gray',
-    shadowOffset: { width: 0, height: 6 }, // Yaha height adjust karke direction control kar sakte ho
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-  }
-  ,
-  picker: {
-    paddingHorizontal: 10,
-    borderColor: '#007BFF',
-    shadowColor: '#000',
-    shadowRadius: 5,
-    elevation: 15
-  },
-  dropdown: {
-    width: '100%',
-    height: 50,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#007BFF',
-    paddingHorizontal: 12,
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  dropdownContainer: {
-    marginBottom: 15,
-  },
-  pickerWrapper: {
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    height: 50, // Match the height of the text inputs
-    justifyContent: 'center',
-  },
-  dropdownText: {
-    fontSize: 16,
-    color: '#333',
-    fontWeight: '500',
-  },
-  button: {
-    backgroundColor: '#FF9500',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-
-    width: '80%',
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 5,
-    elevation: 4
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
-  bottomLeftImage: {
-    position: 'absolute',
-    bottom: 1,
-    left: '50%',
-    transform: [{ translateX: -35 }],
-
-
-  },
-  circleTopLeft: {
-    flex: 1,
-    position: "absolute",
-    top: -50,
-    right: -40,
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: "red",
-
-
-  },
-
-  photobottomtcontainer: {
-    position: 'absolute',
-    bottom: 1,
-    left: '50%',
-    transform: [{ translateX: -42 }],
-    width: 60,
-    height: 60,
-
-  },
-  loader: {
-    marginTop: 50
-  },
-
-  input: {
-    height: 50,
-  
-    borderWidth: 1,
-
-    
-
-    borderColor: '#F6A001',
-    borderRadius: 30,
-    marginBottom: 20,
-    paddingLeft: 15,
-    fontSize: 16,
-    width: '100%',
-   
-    paddingHorizontal: 13,
-    backgroundColor: '#ffffff',
-  },
-  // button: {
-  //   marginTop: 20,
-  //   backgroundColor: '#0066cc',
-  //   borderRadius: 10,
-  //   paddingVertical: 12,
-  //   alignItems: 'center',
-  // },
-  // buttonText: {
-  //   color: '#fff',
-  //   fontSize: 16,
-  //   fontWeight: 'bold',
-  // },
-  datePickerWrapper: {
-    marginBottom: 20,
-  },
-  footer: {
-    marginTop: 30,
-    padding: 10,
-    backgroundColor: '#f1f1f1',
-    textAlign: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
-  },
-  header: {
-    paddingTop: 20,
-    paddingBottom: 10,
-    backgroundColor: '#0066cc',
-    alignItems: 'center',
-  },
-  headerText: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  scrollView: {
-
-  },
-  dateText: {
-    fontSize: 16,
-    color: '#555',
-  },
-
-});
 
 
 export default GenerateHealthReport;

@@ -72,10 +72,30 @@ const DispatchReportlist = () => {
 const styles = StyleSheet.create({
 
   one: { paddingHorizontal: 30 },
-  card: { paddingHorizontal: 35, paddingVertical: 20, backgroundColor: 'white', borderRadius: 8, elevation: 3, marginVertical: 10   },
+  card: { paddingHorizontal: 20,
+     paddingVertical: 40,
+      backgroundColor: 'white',
+       borderRadius: 8, 
+       elevation: 3,
+        marginVertical: 10,
+        height : 150  
+       },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8   },
-  label: { fontWeight: 'bold', color: '#333' },
-  value: { color: '#555' },
+  label: { 
+    fontWeight: 'bold', 
+    color: '#333', 
+    flex: 0.5,
+  
+    fontSize : 15
+  },
+  value: { 
+    color: '#555', 
+    flex: 0.5, 
+    flexWrap: 'wrap',
+  
+  },
+  
+
   topRightCorner: {
     position: 'absolute',
     top: 0,

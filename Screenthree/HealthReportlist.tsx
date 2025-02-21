@@ -34,7 +34,7 @@ const HealthReportlist = () => {
     fetchHealthReports();
   }, []);
 
-  // Function to filter reports based on search and date range
+  
   useEffect(() => {
     let filteredData = reports;
 
@@ -72,7 +72,7 @@ const HealthReportlist = () => {
     <SafeAreaView style={styles.container}>
       <Navbar />
 
-      {/* Search Box */}
+        
       <TextInput
         style={styles.searchInput}
         placeholder="Search Assayer Name and date"
@@ -283,14 +283,10 @@ const styles = StyleSheet.create({
  
 
   },
+  
   heading: {
-
-
-    
- 
     justifyContent : 'center',
     height : '8%',
-
     width: '90%',
    backgroundColor : '#FF9500',
    borderTopLeftRadius: 10, // Adjust the radius as needed
@@ -329,7 +325,7 @@ const styles = StyleSheet.create({
   },
   showImageButton: {
     marginTop: 10,
-    backgroundColor: '#007bff',
+    backgroundColor: '#F79B00',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,

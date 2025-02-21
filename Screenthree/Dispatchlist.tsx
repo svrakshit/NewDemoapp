@@ -42,7 +42,7 @@ const Dispatchlist = () => {
             <View style={styles.cardContainer}>
               {/* Dispatch Branch - Highlighted Section */}
               <View style={styles.dispatchbranchContainer}>
-              
+
                 <View style={styles.row}>
                   <Text style={styles.labelheading}>Dispatch Branch:</Text>
                   <Text style={styles.valueheading}>{item.dispatchbranch}</Text>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 5,
     borderBottomColor: '#f6a001',
-    borderTopLeftRadius: 10, // Adjust the radius as needed
+    borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
 
   },
@@ -132,26 +132,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginVertical: 5,
-  
-   
+
+
   },
   label: {
     fontWeight: "bold",
     color: "#333",
-    fontSize : 15
+    fontSize: 15
   },
   value: {
     color: "#555",
-    fontSize : 15
+    fontSize: 15
   },
   labelheading: {
     fontWeight: "bold",
     color: "white",
-    fontSize : 17
+    fontSize: 17
   },
   valueheading: {
     color: "white",
-    fontSize : 17
+    fontSize: 17
   },
 });
 

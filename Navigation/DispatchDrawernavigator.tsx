@@ -37,7 +37,7 @@ export default function DispatchDrawernavigator() {
     >
       <Drawer.Screen
        
-        name="Dhasboard"
+        name="Dashboard"
         component={RecieveDhasboard}
         options={{
           headerShown: false,
@@ -53,7 +53,7 @@ export default function DispatchDrawernavigator() {
         }}
       />
       <Drawer.Screen
-        name="Health Report list"
+        name="Health Report List"
         component={HealthReportlist}
         options={{
           headerShown: false,
@@ -61,7 +61,7 @@ export default function DispatchDrawernavigator() {
         }}
       />
       <Drawer.Screen
-        name="Dispatch Report list"
+        name="Dispatch Report List"
         component={DispatchReportlist}
         options={{
           headerShown: false,
@@ -69,7 +69,7 @@ export default function DispatchDrawernavigator() {
         }}
       />
       <Drawer.Screen
-        name="Dispatch Truck list"
+        name="Dispatch Truck List"
         component={Dispatchlist}
         options={{
           headerShown: false,
@@ -77,7 +77,7 @@ export default function DispatchDrawernavigator() {
         }}
       />
       <Drawer.Screen
-        name="Recieve Truck list"
+        name="Receive Truck List"
         component={Recievelist}
         options={{
           headerShown: false,

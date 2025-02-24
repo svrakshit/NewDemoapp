@@ -11,6 +11,7 @@ import { RootStackParamList } from '../types/Type';
 import { ImagePickerResponse, launchCamera } from 'react-native-image-picker';
 import styles from '../theme/Healthreport';
 import Footer from '../App/Footer';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import { PermissionsAndroid } from 'react-native';
 
@@ -30,8 +31,10 @@ const GenerateHealthReport = () => {
   const navigation = useNavigation<HealthReportSelection>();
 
   const [data2, setData2] = useState([]);
-  const [data3, setData3] = useState([]);
-  const [data5, setData5] = useState([]);
+
+
+  const [destinationBranch, setDestinationBranch] = useState([]);
+  const [destinationDistrict, setDestinationDistrict] = useState([]);
   const [truckNumber, setTruckNumber] = useState('');
   const [grossWeight, setGrossWeight] = useState('');
   const [netWeight, setNetWeight] = useState('');
@@ -58,9 +61,9 @@ const GenerateHealthReport = () => {
 
   const [stainingColour, setStainingColour] = useState(false);
   const [stainingColourPercent, setStainingColourPercent] = useState('');
-  const [destinationBranch, setDestinationBranch] = useState('');
-  const [destinationDistrict, setDestinationDistrict] = useState('');
+
   const [blackSmutOnion, setBlackSmutOnion] = useState(false);
+
   const [BlackSmutPercent, setBlackSmatPercent] = useState('');
   const [sproutedOnion, setSproutedOnion] = useState(false);
   const [sproutedPercent, setSproutedPercent] = useState('');
@@ -147,29 +150,66 @@ const GenerateHealthReport = () => {
 
 
 
-
-
-
   const handleSubmit = async () => {
+    // Required fields validation
+    if (
+      !companyId || !branchId || !truckNumber.trim() || !grossWeight ||
+      !tareWeight || !netWeight || !bagCount || !size ||
+      !fpcPersonName || !selectedDate
+    ) {
+      alert('Please fill all required fields.');
+      return;
+    }
+
+    // Date validation
+    if (!selectedDate || isNaN(new Date(selectedDate).getTime())) {
+      alert('Invalid date selected.');
+      return;
+    }
+
+    // Truck Number format validation
+    const truckNumberRegex = /^[A-Z]{2}\d{2}[A-Z]{2}\d{4}$/;
+    if (!truckNumberRegex.test(truckNumber.trim().toUpperCase())) {
+      alert('Invalid Truck Number format. Please enter in format.');
+      return;
+    }
+
+    // Function to check if value is between 1 and 100
+    // const isValidPercentage = (value: any) => {
+    //   const num = Number(value);
+    //   return !isNaN(num) && num >= 1 && num <= 100;
+    // };
+
+    // // Percentage Fields Validation
+    // if (
+    //   !isValidPercentage(stainingColourPercent) ||
+    //   !isValidPercentage(BlackSmutPercent) ||
+    //   !isValidPercentage(sproutedPercent) ||
+    //   !isValidPercentage(spoiledPercent) ||
+    //   !isValidPercentage(onionSkin)
+    // ) {
+    //   alert('All percentage values must be between 1 and 100.');
+    //   return;
+    // }
+
+    // Image upload validation
+    if (!imageUri || imageUri.length === 0) {
+      alert('Please upload at least one image.');
+      return;
+    }
+
     const formData = new FormData();
-
     formData.append('companyId', companyId);
-    console.log('formcompany', companyId);
     formData.append('branchId', branchId);
-
     formData.append('truckNumber', truckNumber);
     formData.append('grossWeight', grossWeight);
-    formData.append("DestinationBranch", destinationBranch);
-    console.log('DestinationBranch', destinationBranch);
-    formData.append("DestinationDistrict", destinationDistrict);
-    console.log("DestinationDistrict", destinationDistrict);
+    formData.append("DestinationBranch", JSON.stringify(destinationBranch));
+    formData.append("DestinationDistrict", JSON.stringify(destinationDistrict));
     formData.append('tareWeight', tareWeight);
-    console.log('tareWeight', tareWeight);
     formData.append('netWeight', netWeight);
     formData.append('bagCount', bagCount);
     formData.append('size', size);
     formData.append('stainingColour', stainingColour.toString());
-
     formData.append('stainingColourPercent', stainingColourPercent);
     formData.append('blackSmutOnion', blackSmutOnion.toString());
     formData.append('BlackSmutPercent', BlackSmutPercent);
@@ -185,44 +225,17 @@ const GenerateHealthReport = () => {
     formData.append('SpoliedPercent', SpoliedPercent);
     formData.append('SpoliedBranch', SpoliedBranch);
     formData.append('SpoliedComment', SpoliedComment);
-    formData.append('selectedDate', selectedDate.toISOString());
+    formData.append('selectedDate', new Date(selectedDate).toISOString());
 
+    // Image Upload
     if (imageUri) {
-      const uris = imageUri.map((image) => image.uri);
-      const types = imageUri.map((image) => image.type);
-      const fileNames = imageUri.map((image) => image.fileName);  // ✅ Corrected
-
-      console.log('Only URIs:', uris);
-      console.log('Only Types:', types);
-      console.log('Only FileNames:', fileNames);
-
-
-
-
-      imageUri.forEach((imageUri) => {
+      imageUri.forEach((image) => {
         formData.append('Files', {
-          uri: imageUri.uri,
-          name: imageUri.fileName,
-          type: imageUri.type,
+          uri: image.uri,
+          name: image.fileName || 'image.jpg',
+          type: image.type || 'image/jpeg',
         } as any);
       });
-
-
-
-
-      imageUri.forEach((image) => {
-        console.log('Keyhsgyh:', 'Files');
-        console.log('Value:', {
-          uri: image.uri,
-          name: image.fileName,
-          type: image.type,
-        });
-      });
-
-
-
-
-
     }
 
     try {
@@ -231,14 +244,47 @@ const GenerateHealthReport = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
+
       console.log('Form submitted successfully:', response.data);
       alert('Health Report Submitted Successfully!');
+
+
+      setCompanyId('');
+      setData2([]);
+      setDestinationBranch([]);
+      setDestinationDistrict([]);
+      setBranchId('');
+      setTruckNumber('');
+      setGrossWeight('');
+      setTareWeight('');
+      setNetWeight('');
+      setBagCount('');
+      setSize('');
+      setFpcPersonName('');
+      setBlackSmatPercent('');
+      setStainingColourPercent('');
+      setSproutedPercent('');
+      setSpoiledPercent('');
+      setOnionSkin('');
+      setMoisture('');
+      setOnionSkinPercent('');
+      setMoisturePercent('');
+      setSpoliedPercent('');
+      setSpoliedBranch('');
+      setSpoliedComment('');
+
+      setImageUri([]);
+
+      // Reset step
       setCurrentStep(1);
+
     } catch (error) {
       console.error('Error submitting form:', error);
       alert('Failed to submit Health Report. Please try again.');
     }
   };
+
+
 
 
 
@@ -281,7 +327,7 @@ const GenerateHealthReport = () => {
   const fetchData3 = async (companyId: any) => {
     try {
       const response = await api.get(`/api/group?GroupType=Branch&BranchType=Receiving&ApprovalStatus=APPROVED&CompanyId=${companyId}`);
-      setData3(response.data);
+      setDestinationBranch(response.data);
 
 
     } catch (error) {
@@ -291,16 +337,17 @@ const GenerateHealthReport = () => {
   };
   const fetchData5 = async (branchId: any) => {
     try {
-      const response = await api.get(`/api/grouplocation
+      const response = await api.get(`/api/dropdown/group/${branchId}/location?locationType=GENERAL
         `);
 
 
 
       if (Array.isArray(response.data)) {
-        setData5(response.data);
+        setDestinationDistrict(response.data);
+        console.log('third', response.data);
       } else {
         console.error('Unexpected API response format:', response.data);
-        setData5([]);
+        setDestinationDistrict([]);
       }
     } catch (error) {
       console.error('Error fetching data5:', error);
@@ -400,7 +447,7 @@ const GenerateHealthReport = () => {
                     style={styles.picker}
                   >
                     <Picker.Item label="Select Branch" value="" />
-                    {data3.map((item, idx) => (
+                    {destinationBranch.map((item, idx) => (
                       <Picker.Item key={idx} label={item.name} value={item.id} /> // yaha value ko id set kiya hai
                     ))}
                   </Picker>
@@ -416,20 +463,20 @@ const GenerateHealthReport = () => {
 
                     style={styles.picker}
                   >
-                    <Picker.Item label="Select storage location" value="" />
-                    {data5.map((item, idx) => (
-                      <Picker.Item key={idx} label={item.name} value={item.text} />
+                    <Picker.Item label="Select District location" value="" />
+                    {destinationDistrict.map((item, idx) => (
+                      <Picker.Item key={idx} label={item.text} value={item.text} />
                     ))}
                   </Picker>
                 </View>
               </View>
 
-             
+
               <View style={styles.buttoncontent}>
-              <TouchableOpacity style={styles.button} onPress={() =>  handleNext(2)}>
-      <Text style={styles.buttonText}>Next</Text>
-    </TouchableOpacity>
-    </View>
+                <TouchableOpacity style={styles.button} onPress={() => handleNext(2)}>
+                  <Text style={styles.buttonText}>Next</Text>
+                </TouchableOpacity>
+              </View>
 
 
 
@@ -441,18 +488,9 @@ const GenerateHealthReport = () => {
 
 
 
-              <TextInput
-                placeholder="Enter Destination Branch"
-                value={destinationBranch}
-                onChangeText={setDestinationBranch}
-                style={styles.input}
-              />
-              <TextInput
-                placeholder="Enter Destination District"
-                value={destinationDistrict}
-                onChangeText={setDestinationDistrict}
-                style={styles.input}
-              />
+
+
+
               <TextInput
                 maxLength={12}
                 style={styles.input}
@@ -521,18 +559,18 @@ const GenerateHealthReport = () => {
                   )
               }
 
-            
-              <View style={styles.buttoncontent} >
-              <TouchableOpacity style={styles.button} onPress={() => handleNext(currentStep + 1)}>
-            <Text style={styles.buttonText}>Next</Text>
-             </TouchableOpacity>
 
-          
-       <TouchableOpacity style={styles.button} onPress={handlePrevious}>
-      <Text style={styles.buttonText}>Previous</Text>
-         </TouchableOpacity>
-         
-         </View>
+              <View style={styles.buttoncontent} >
+                <TouchableOpacity style={styles.button} onPress={() => handleNext(currentStep + 1)}>
+                  <Text style={styles.buttonText}>Next</Text>
+                </TouchableOpacity>
+
+
+                <TouchableOpacity style={styles.button} onPress={handlePrevious}>
+                  <Text style={styles.buttonText}>Previous</Text>
+                </TouchableOpacity>
+
+              </View>
 
 
 
@@ -556,6 +594,8 @@ const GenerateHealthReport = () => {
                       setStainingColour(value);
                       if (!value) setStainingColourPercent('');
                     }}
+                    trackColor={{ false: '#767577', true: 'red' }} // Red track when ON
+                    thumbColor={stainingColour ? 'white' : '#f4f3f4'} // White thumb when ON
                   />
                 </View>
                 {stainingColour && (
@@ -569,7 +609,7 @@ const GenerateHealthReport = () => {
                 )}
 
                 <View style={styles.switchContainer}>
-                  <Text style={styles.text}>Black Smat Onion</Text>
+                  <Text style={styles.text}>Black Smut Onion</Text>
                   <Switch
                     value={blackSmutOnion}
                     onValueChange={(value) => {
@@ -587,6 +627,7 @@ const GenerateHealthReport = () => {
                     keyboardType="numeric"
                   />
                 )}
+
 
                 <View style={styles.switchContainer}>
                   <Text style={styles.text}>Sprouted Onion</Text>
@@ -718,33 +759,33 @@ const GenerateHealthReport = () => {
               <View style={styles.buttoncontent} >
 
 
-              <TouchableOpacity style={styles.button} onPress={requestCameraPermission}>
-            <Text style={styles.buttonText}>Camera</Text>
-             </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={requestCameraPermission}>
+                  <MaterialIcons name="camera" size={30} color="white" />
+                </TouchableOpacity>
 
-             {imageUri.length > 0 &&
-                imageUri.map((img, index) => (
-                  <Image key={index} source={{ uri: img.uri }} style={styles.image} />
-                ))}
+                {imageUri.length > 0 &&
+                  imageUri.map((img, index) => (
+                    <Image key={index} source={{ uri: img.uri }} style={styles.image} />
+                  ))}
 
 
-                         
-              <TouchableOpacity style={styles.button}  onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Submit</Text>
-             </TouchableOpacity>
 
-             <TouchableOpacity style={styles.button}  onPress={handlePrevious}>
-            <Text style={styles.buttonText}>Previous</Text>
-             </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                  <Text style={styles.buttonText}>Submit</Text>
+                </TouchableOpacity>
 
-             </View>
+                <TouchableOpacity style={styles.button} onPress={handlePrevious}>
+                  <Text style={styles.buttonText}>Previous</Text>
+                </TouchableOpacity>
+
+              </View>
             </View>
           )}
 
-<Footer />
 
         </ScrollView>
-    
+        <Footer />
+
       </SafeAreaView>
     </KeyboardAvoidingView>
   );

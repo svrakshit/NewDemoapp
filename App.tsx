@@ -1,8 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-
-import StackNavigator from './Navigation/StackNavigator';  // Assuming this is your stack navigator component
+import StackNavigator from './Navigation/StackNavigator';  
 import { NavigationContainerRef } from '@react-navigation/native';
+
+
 
 
 type RootParamList = {};
@@ -20,6 +21,7 @@ const App = () => {
   }, [navigationRef.current]);
 
   return (
+    
     <NavigationContainer ref={navigationRef}>
       {isReady && (
         <NavigationContext.Provider value={navigationRef.current}>

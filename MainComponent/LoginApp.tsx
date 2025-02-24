@@ -16,6 +16,7 @@ const LoginApp: React.FC<LoginAppProps> = ({ navigation }) => {
   const [password, setPassword] = useState('Onion@2025');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   const handleLogin = async () => {
@@ -69,11 +70,11 @@ const LoginApp: React.FC<LoginAppProps> = ({ navigation }) => {
       </View>
       <View style={styles.logoContainer}>
         <Image source={require('../assets/logo.png')} style={styles.logo} />
-        <Text style={styles.logoText}>Login in to your account</Text>
+        <Text style={styles.logoText}>Login Your Account</Text>
       </View>
 
-      <ImageBackground 
-        source={require('../assets/Ellipse8.png')}  
+      <ImageBackground
+        source={require('../assets/Ellipse8.png')}
         style={styles.inputBackground}
         resizeMode="contain"
       >
@@ -102,13 +103,18 @@ const LoginApp: React.FC<LoginAppProps> = ({ navigation }) => {
             <Icon name={passwordVisible ? 'eye-off' : 'eye'} size={20} color="#666" />
           </TouchableOpacity>
         </View>
+
       </ImageBackground>
 
       <View style={styles.view}>
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Login</Text>
+
+        </TouchableOpacity >
+
+        <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword')}>
+          <Text style={styles.footerText}>Forget Password</Text>
         </TouchableOpacity>
-        <Text style={styles.footerText}>Don't have an account? Sign Up</Text>
       </View>
 
       {/* Conditionally render the image when keyboard is not visible */}

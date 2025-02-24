@@ -3,6 +3,8 @@ import { Modal, SafeAreaView, StyleSheet, Text, FlatList, ActivityIndicator, Vie
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Navbar from '../App/Navbar';
 import api from '../service/api/apiInterceptors';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import ImageViewing from "react-native-image-viewing";
 
 const HealthReportlist = () => {
   const [reports, setReports] = useState([]);
@@ -16,7 +18,7 @@ const HealthReportlist = () => {
   const [endDate, setEndDate] = useState(null);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
-  
+
 
   useEffect(() => {
     const fetchHealthReports = async () => {
@@ -34,27 +36,29 @@ const HealthReportlist = () => {
     fetchHealthReports();
   }, []);
 
-  
+
   useEffect(() => {
     let filteredData = reports;
-
     if (searchQuery) {
       filteredData = filteredData.filter(item =>
         item.assayername.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
+   
 
     if (startDate && endDate) {
       filteredData = filteredData.filter(item => {
-        const reportDate = new Date(item.date);
-        return reportDate >= startDate && reportDate <= endDate;
+        const reportDate = new Date(item.date).getTime(); // Convert to timestamp
+        return reportDate >= startDate.getTime() && reportDate <= endDate.getTime();
       });
     }
+    
+   
 
     setFilteredReports(filteredData);
   }, [searchQuery, startDate, endDate, reports]);
 
-  const fetchReportDetails = async (id : any) => {
+  const fetchReportDetails = async (id: any) => {
     try {
       const response = await api.get(`/api/healthreport/${id}`);
       setSelectedReport(response.data);
@@ -65,6 +69,7 @@ const HealthReportlist = () => {
     }
   };
 
+  
 
 
 
@@ -72,13 +77,15 @@ const HealthReportlist = () => {
     <SafeAreaView style={styles.container}>
       <Navbar />
 
-        
+
       <TextInput
         style={styles.searchInput}
         placeholder="Search Assayer Name and date"
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
+
+
 
       {/* Date Filters */}
       <View style={styles.dateFilterContainer}>
@@ -122,11 +129,13 @@ const HealthReportlist = () => {
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <View style={styles.one}>
-             
-              <View style={styles.card}>
-              <View style={styles.topRightCorner} />
-   
-   <View style={styles.bottomLeftCorner} />
+
+              <View style={styles.card}
+               
+              >
+                <View style={styles.topRightCorner} />
+
+                <View style={styles.bottomLeftCorner} />
                 <View style={styles.row}>
                   <Text style={styles.label}>Assayer Name:</Text>
                   <Text style={styles.value}>{item.assayername}</Text>
@@ -156,88 +165,109 @@ const HealthReportlist = () => {
       <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.heading}>
-          <Text style={styles.text} >Recieve Health Report Details</Text>
+            <Text style={styles.text} >Recieve Health Report Details</Text>
           </View>
-        <View style={styles.modalContent}>
+          <View style={styles.modalContent}>
 
-  {selectedReport && (
-    <>
-      <View style={styles.rowone}>
-        <Text style={styles.labelone}>Assayer Name:</Text>
-        <Text style={styles.valueone}>{selectedReport.assayername}</Text>
-      </View>
+            {selectedReport && (
+              <>
+                <View style={styles.rowone}>
+                  <Text style={styles.labelone}>Assayer Name:</Text>
+                  <Text style={styles.valueone}>{selectedReport.assayername}</Text>
+                </View>
 
-      <View style={styles.rowone}>
-        <Text style={styles.labelone}>Truck Number:</Text>
-        <Text style={styles.valueone}>{selectedReport.trucknumber}</Text>
-      </View>
+                <View style={styles.rowone}>
+                  <Text style={styles.labelone}>Truck Number:</Text>
+                  <Text style={styles.valueone}>{selectedReport.trucknumber}</Text>
+                </View>
 
-      <View style={styles.rowone}>
-        <Text style={styles.labelone}>Date:</Text>
-        <Text style={styles.valueone}>{new Date(selectedReport.date).toLocaleDateString('en-GB')}</Text>
-      </View>
+                <View style={styles.rowone}>
+                  <Text style={styles.labelone}>Date:</Text>
+                  <Text style={styles.valueone}>{new Date(selectedReport.date).toLocaleDateString('en-GB')}</Text>
+                </View>
 
-      <View style={styles.rowone}>
-        <Text style={styles.labelone}>Approval Status:</Text>
-        <Text style={styles.valueone}>{selectedReport.approvalstatus}</Text>
-      </View>
+                <View style={styles.rowone}>
+                  <Text style={styles.labelone}>Approval Status:</Text>
+                  <Text style={styles.valueone}>{selectedReport.approvalstatus}</Text>
+                </View>
 
-      {selectedReport.datastring && (() => {
-        const parsedData = JSON.parse(selectedReport.datastring);
-        return (
-          <>
-            <View style={styles.rowone}>
-              <Text style={styles.labelone}>Destination Branch:</Text>
-              <Text style={styles.valueone}>{parsedData.CNAName}</Text>
-            </View>
-            <View style={styles.rowone}>
-              <Text style={styles.labelone}>Storage Name:</Text>
-              <Text style={styles.valueone}>{parsedData.StorageName}</Text>
-            </View>
-            <View style={styles.rowone}>
-              <Text style={styles.labelone}>Gross Weight:</Text>
-              <Text style={styles.valueone}>{parsedData.GrossWeight}</Text>
-            </View>
-            <View style={styles.rowone}>
-              <Text style={styles.labelone}>Net Weight:</Text>
-              <Text style={styles.valueone}>{parsedData.NetWeight}</Text>
-            </View>
-            <View style={styles.rowone}>
-              <Text style={styles.labelone}>Tare Weight:</Text>
-              <Text style={styles.valueone}>{parsedData.TareWeight}</Text>
-            </View>
-          </>
-        );
-      })()}
+                {selectedReport.datastring && (() => {
+                  const parsedData = JSON.parse(selectedReport.datastring);
+                  return (
+                    <>
+                      <View style={styles.rowone}>
+                        <Text style={styles.labelone}>Destination Branch:</Text>
+                        <Text style={styles.valueone}>{parsedData.CNAName}</Text>
+                      </View>
+                      <View style={styles.rowone}>
+                        <Text style={styles.labelone}>Storage Name:</Text>
+                        <Text style={styles.valueone}>{parsedData.StorageName}</Text>
+                      </View>
+                      <View style={styles.rowone}>
+                        <Text style={styles.labelone}>Gross Weight:</Text>
+                        <Text style={styles.valueone}>{parsedData.GrossWeight}</Text>
+                      </View>
+                      <View style={styles.rowone}>
+                        <Text style={styles.labelone}>Net Weight:</Text>
+                        <Text style={styles.valueone}>{parsedData.NetWeight}</Text>
+                      </View>
+                      <View style={styles.rowone}>
+                        <Text style={styles.labelone}>Tare Weight:</Text>
+                        <Text style={styles.valueone}>{parsedData.TareWeight}</Text>
+                      </View>
+                    </>
+                  );
+                })()}
 
-      {/* Button to Show/Hide Images */}
-      <TouchableOpacity style={styles.showImageButton} onPress={() => setShowImages(!showImages)}>
-        <Text style={styles.buttonText}>{showImages ? 'Hide Images' : 'Show Images'}</Text>
-      </TouchableOpacity>
 
-      {showImages && (
-  <FlatList
-    data={selectedReport.files}
-    keyExtractor={(item, index) => index.toString()}
-    horizontal={true}  // Horizontal scrolling
-    showsHorizontalScrollIndicator={false}  // Hide scrollbar
-    contentContainerStyle={{ paddingHorizontal: 10 ,  paddingVertical : 20}} // Spacing for better UI
-    renderItem={({ item }) => (
-      <Image 
-        source={{ uri: api.defaults.baseURL + item }} 
-        style={styles.image} 
-      />
-    )}
-  />
-)}
 
-    </>
-  )}
+                <View style={styles.rowone}>
+                  <Text style={styles.labelone}>Images:</Text>
+                  <TouchableOpacity onPress={() => setShowImages(!showImages)}>
+                    <MaterialIcons
+                      name={showImages ? 'visibility-off' : 'visibility'}
+                      size={24}
+                      color="black"
+                    />
+                  </TouchableOpacity>
 
-  <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-    <Text style={styles.buttonText}>Close</Text>
-  </TouchableOpacity>
-</View>
+                </View>
+
+
+                <ImageViewing
+                  images={selectedReport.files.map((file: string) => ({ uri: api.defaults.baseURL + file }))}
+                  imageIndex={0}
+                  visible={showImages}
+                  onRequestClose={() => setShowImages(false)}
+                />
+
+
+
+
+                {showImages && (
+                  <FlatList
+                    data={selectedReport.files}
+                    keyExtractor={(item, index) => index.toString()}
+                    horizontal={true}  // Horizontal scrolling
+                    showsHorizontalScrollIndicator={false}  // Hide scrollbar
+                    contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 20 }}
+                    renderItem={({ item }) => (
+                      <Image
+                        source={{ uri: api.defaults.baseURL + item }}
+                        style={styles.image}
+                      />
+                    )}
+                  />
+                )}
+
+
+              </>
+            )}
+
+            <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
 
         </View>
       </Modal>
@@ -249,61 +279,61 @@ const styles = StyleSheet.create({
 
 
   container: { flex: 1, backgroundColor: '#fff' },
-  searchInput: { margin: 10, padding: 17, borderWidth: 1, borderRadius: 25, borderColor: '#ccc' ,  backgroundColor : 'fff'  },
+  searchInput: { margin: 10, padding: 17, borderWidth: 1, borderRadius: 25, borderColor: '#ccc', backgroundColor: 'fff' },
   dateFilterContainer: { flexDirection: 'row', justifyContent: 'space-around', marginVertical: 10 },
   dateButton: { backgroundColor: '#007BFF', padding: 10, borderRadius: 5 },
   one: { paddingHorizontal: 30 },
-  card: { paddingHorizontal: 35, paddingVertical: 20, backgroundColor: 'white', borderRadius: 8, elevation: 3, marginVertical: 10  },
-  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8  },
-  rowone: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'center', 
-    marginBottom: 8, 
-  
-    width: 300, 
+  card: { paddingHorizontal: 35, paddingVertical: 20, backgroundColor: 'white', borderRadius: 8, elevation: 3, marginVertical: 10 },
+  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+  rowone: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+
+    width: 300,
     flexWrap: 'wrap',  // Ensure text wraps inside
     overflow: 'hidden',  // Hide overflowing content
     paddingHorizontal: 10  // Add some padding
   },
-  
+
   label: { fontWeight: 'bold', color: '#333' },
   value: { color: '#555' },
-  labelone: { fontWeight: 'bold', color: '#333' ,  fontSize: 20 },
-  valueone: { color: '#555' ,  fontSize: 18 },
+  labelone: { fontWeight: 'bold', color: '#333', fontSize: 20 },
+  valueone: { color: '#555', fontSize: 18 },
   button: { backgroundColor: '#F79B00', padding: 8, borderRadius: 5, alignItems: 'center' },
   buttonText: { color: '#fff', fontWeight: 'bold' },
   parentbutton: { flex: 1, alignItems: 'center', justifyContent: 'center' },
- 
+
   modalContainer: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.6)', // Dark Transparent Overlay
     justifyContent: 'center',
     alignItems: 'center',
- 
+
 
   },
-  
+
   heading: {
-    justifyContent : 'center',
-    height : '8%',
+    justifyContent: 'center',
+    height: '8%',
     width: '90%',
-   backgroundColor : '#FF9500',
-   borderTopLeftRadius: 10, // Adjust the radius as needed
-   borderTopRightRadius: 10,
+    backgroundColor: '#FF9500',
+    borderTopLeftRadius: 10, // Adjust the radius as needed
+    borderTopRightRadius: 10,
   },
 
-  text : {
-  
+  text: {
+
     textAlign: 'center',
     fontSize: 18,
     fontWeight: 'bold',
-    color : 'white'
-  
+    color: 'white'
+
   },
   modalContent: {
-  
-    borderTopColor: '#ffcc00', 
+
+    borderTopColor: '#ffcc00',
     width: '90%',
     backgroundColor: '#fff',
     borderBottomLeftRadius: 10, // Adjust the radius as needed
@@ -341,15 +371,15 @@ const styles = StyleSheet.create({
     width: '40%',
     alignItems: 'center',
   },
-  
-  
+
+
   image: {
     width: 250,
     height: 150,
     marginVertical: 10,
     borderRadius: 10,
     resizeMode: 'cover',
-    marginLeft : 20
+    marginLeft: 20
   },
   topRightCorner: {
     position: 'absolute',

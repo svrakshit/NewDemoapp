@@ -84,8 +84,8 @@ const styles = StyleSheet.create({
   },
   circleBackground: {
     backgroundColor: '#F6A00191',
-    width: 100,
-    height: 100,
+    width: 90,
+    height: 90,
     borderRadius: 50,
     position: 'relative',
     top: -35,

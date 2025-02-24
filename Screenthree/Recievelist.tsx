@@ -41,7 +41,7 @@ const Recievelist = () => {
                 <Text style={styles.valueheading}>{item.dispatchbranch}</Text>
               </View>
 
-              {/* Data Card */}
+              {/* D a t a   C  a  r  d    */}
               <View style={styles.card}>
                 <View style={styles.row}>
                   <Text style={styles.label}>District:</Text>

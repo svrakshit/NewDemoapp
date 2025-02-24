@@ -6,6 +6,7 @@ import api from '../service/api/apiInterceptors';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { RootStackParamList } from '../types/Type';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Footer from '../App/Footer';
 
 const RecieveDhasboard = () => {
   const [dispatchCount, setDispatchCount] = useState<number | null>(null);
@@ -53,12 +54,21 @@ const RecieveDhasboard = () => {
         >
           <View style={styles.cardContainer}>
             {/* Dispatch Truck */}
-            <TouchableOpacity 
-              style={[styles.card, styles.dispatchCard]} 
-              onPress={() => navigation.navigate("Dispatch Truck list")} 
+            <TouchableOpacity
+              style={[styles.card, styles.dispatchCard]}
+              onPress={() => navigation.navigate("Receive Truck List")}
             >
-              <MaterialIcons name="local-shipping" size={40} color="black" />
-              <Text style={styles.cardTitle}>Dispatch Truck</Text>
+              {/* Top Right Corner */}
+              <View style={styles.topRightCorner} />
+
+
+              <Text style={styles.cardTitle}> Receiving Pending Truck </Text>
+              <View style={{ backgroundColor: "#F79B0099", padding: 10, borderRadius: 50 }}>
+                <MaterialIcons name="local-shipping" size={40} color="white" />
+              </View>
+              <View>
+
+              </View>
               {loading ? (
                 <ActivityIndicator size="small" color="#000000" />
               ) : error ? (
@@ -66,15 +76,28 @@ const RecieveDhasboard = () => {
               ) : (
                 <Text style={styles.cardDescription}>Count {dispatchCount}</Text>
               )}
+
+              {/* Bottom Left Corner */}
+              <View style={styles.bottomLeftCorner} />
             </TouchableOpacity>
 
-            {/* Receive Truck */}
-            <TouchableOpacity 
-              style={[styles.card, styles.receiveCard]} 
-              onPress={() => navigation.navigate('Recieve Truck list')}
+
+
+            <TouchableOpacity
+              style={[styles.card, styles.dispatchCard]}
+              onPress={() => navigation.navigate("Dispatch Truck List")}
             >
-              <MaterialIcons name="directions-bus" size={40} color="black" />
-              <Text style={styles.cardTitle}>Receive Truck</Text>
+              {/* Top Right Corner */}
+              <View style={styles.topRightCorner} />
+
+
+              <Text style={styles.cardTitle}>Received Truck</Text>
+              <View style={{ backgroundColor: "#F79B0099", padding: 10, borderRadius: 50 }}>
+                <MaterialIcons name="directions-bus" size={40} color="white" />
+              </View>
+              <View>
+
+              </View>
               {loading ? (
                 <ActivityIndicator size="small" color="#000000" />
               ) : error ? (
@@ -82,10 +105,18 @@ const RecieveDhasboard = () => {
               ) : (
                 <Text style={styles.cardDescription}>Count {recieveCount}</Text>
               )}
+
+              {/* Bottom Left Corner */}
+              <View style={styles.bottomLeftCorner} />
             </TouchableOpacity>
+
+
+
           </View>
         </ScrollView>
       </SafeAreaView>
+      <Footer />
+
     </View>
   );
 };
@@ -102,19 +133,16 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flexGrow: 1,
-   
   },
   cardContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
     marginBottom: 25,
-
-    
   },
   card: {
     flex: 1,
-    padding: 20,
+    padding: 25,
     margin: 10,
     borderRadius: 15,
     alignItems: 'center',
@@ -124,19 +152,21 @@ const styles = StyleSheet.create({
     elevation: 6,
     height: 180,
     justifyContent: 'center',
+    position: 'relative', // Corners ke liye relative position zaroori hai
   },
   dispatchCard: {
     backgroundColor: 'white',
+    height: '65%'
   },
   receiveCard: {
     backgroundColor: 'white',
   },
   cardTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 17,
+
     color: 'black',
     marginTop: 10,
-    width: 140,
+    width: 150,
     textAlign: 'center',
   },
   cardDescription: {
@@ -151,6 +181,29 @@ const styles = StyleSheet.create({
     marginTop: 5,
     textAlign: 'center',
   },
+
+  // Top Right Corner
+  topRightCorner: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 25,
+    height: 25,
+    backgroundColor: '#F79B0099', // Orange color
+    borderTopRightRadius: 10,
+  },
+
+  // Bottom Left Corner
+  bottomLeftCorner: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: 25,
+    height: 25,
+    backgroundColor: '#F79B0099', // Orange color
+    borderBottomLeftRadius: 10,
+  },
 });
+
 
 export default RecieveDhasboard;

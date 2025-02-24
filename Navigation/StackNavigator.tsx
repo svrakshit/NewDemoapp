@@ -12,6 +12,7 @@ import DispatchDrawernavigator from './DispatchDrawernavigator';
 import DispatchRecieve from '../Screenthree/DispatchRecieve';
 import HealthReportselect from '../Screenthree/HealthReportselect';
 import HealthReport from '../Screenthree/HealthReport';
+import ForgetPassword from '../MainComponent/ForgetPassword';
 
 
 
@@ -34,32 +35,18 @@ export default function StackNavigator() {
 
 
       <Stack.Screen name="DispatchDrawernavigator" component={DispatchDrawernavigator} />
-    
-  
+
+
       <Stack.Screen name="DispatchRecieve" component={DispatchRecieve} />
       <Stack.Screen name="Navbar" component={Navbar} />
-
-      
       <Stack.Screen name=" SwitchScreens" component={SwitchScreens} />
-   
+      <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
       <Stack.Screen name="HealthReport" component={HealthReport} />
-      <Stack.Screen name="HealthReportselect" component={HealthReportselect}    options={{
-      headerTitle: 'Health Report Select',  // Custom title
-      headerStyle: { backgroundColor: '#f8f8f8' },  // Custom background color
-                   headerTintColor: '#333',  // Text color
-                         }} />
-
-
-
-
-
-
-
-
-
-
-
-
+      <Stack.Screen name="HealthReportselect" component={HealthReportselect} options={{
+        headerTitle: 'Health Report Select',  // Custom title
+        headerStyle: { backgroundColor: '#f8f8f8' },  // Custom background color
+        headerTintColor: '#333',  // Text color
+      }} />
     </Stack.Navigator>
 
   );

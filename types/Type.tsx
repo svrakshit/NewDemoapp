@@ -14,13 +14,13 @@ export type RootStackParamList = {
     HealthReportselect: undefined;
     
     DispatchRecieve :  { quantitymt: string };
-    Dhasboard : undefined;
+    Dashboard : undefined;
 
     "Generate Health Report": undefined;
-    "Health Report list": undefined;
-    "Dispatch Report list": undefined;
-    "Dispatch Truck list": undefined;
-    "Recieve Truck list": undefined;
+    "Health Report List": undefined;
+    "Dispatch Report List": undefined;
+    "Dispatch Truck List": undefined;
+    "Receive Truck List": undefined;
     HealthReport :  { 
       truckNumber: string;
   grossWeight: string;
